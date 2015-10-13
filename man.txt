@@ -1,0 +1,98 @@
+card [options ...] [persons name] [whiskey name]
+
+If no whiskey name, attempting adding/removing returns stdout message, cannot 
+search whiskey related things.
+
+----Program information----
+- Adds peoples information via a pin number, such as their phone number.
+  No two pins should be the same
+
+- By Default(no [options], the program adds the whiskey to the given persons name. 
+
+- If a whiskey is being added to a name that does not exist, it 
+  creates the name and adds the whiskey, and notify the user
+
+- Upon adding a new name, if the same name exists the user will be prompted for
+  a middle initial, or middle name to make future inputs quicker (no manual check
+  for the correct card with same name)
+
+- If there is more than 1 person by the same name, the user must choose the
+  correct one based on their whiskey count and the whiskeys that have been drank.
+
+- A database of whiskeys must be maintained in order to ensure each whiskey name
+  is appropriate and doubles never occure. 
+  
+  This maintence can be programmed out  but it would leave the potential for 
+  doubles to occure. This allready occures by doing cards by hand since the 
+  cards must be manually checked for doubles anyway. 
+
+  Therefore, the trade off is
+  pros: - Garuntee that there are no doubles on a card, therefore no manual check
+          for doubles. (good when someone gets 50,100,etc.)
+
+  cons: - Servers have to input exact things (limited spellchecking, hassle)
+        - Managers(hopefully) have to input new whiskeys (although quick; -nw)
+
+        Unlikley,
+        - If a non-manager enters new whiskey into the database with a
+          misspelling, then a manager enters in a correct spelling; Low chance 
+          for a double to occure caused by "proper" misspelling. Only a manual 
+          check would catch this.
+
+        NOTE: the non-manager thing can be resolved with manager codes, but it
+              doesnt seem too worth it because its unlikely unless the 
+              managers tell the servers how to add a wiskey to the database.
+
+----[options ....]----
+                    /* add/remove information to/from a name */
+-aw , Add's a whiskey to the [persons name]. (Default w/ no arg)
+
+-anw, Add's a name to the list, and the given [whiskey name]; (default w/ no arg)
+
+-rn , Removes a person from the bourbon list, and all record of their drinking
+      achievements. Most likely used in fits of rage. "We lost the card. ;)"
+
+-rw , Removes a whiskey from a persons bourbon card. In case of fuck ups!
+
+                    /* display options */
+-d , Display the card for [persons name], if [whiskey name] is given, highlight
+     if the whiskey is on the card, does not add anything.
+
+-dw , Displays a search for a given whiskey.
+
+-dc , Only display the comments about a person.
+
+
+                    /* add/remove information to/from database */
+-dsw , searches the database of whiskeys to see if it is allready there. 
+
+-dsn , searches the database of names to see if the user exists.
+
+-nw , Adds a new whiskey to the database of whiskeys. (if being used, see
+      program information), if whiskey exists, inform user.
+
+-nn , Adds a new name to the name database without adding a whiskey. (-_-;)
+
+                    /* Winning option for the servers */
+-c  , When -c is used, a prompt is given to comment on [persons name], this 
+      will be used to shame dick heads or praise the tip. ;)
+
+
+----Card layout----
+typedef struct Card
+{
+    char *name;          /* name of the card owner */ 
+    uint32_t *drank;     /* whiskeys drank. allocates room for 250 whiskeys, 
+                            recorded by number corresponding to database */
+    uint32_t pin;        /* pin number identifying the peeps */
+    uint8_t whiskCount;  /* current number of whiskeys drank */
+} 
+
+
+BUG NOTE: Unless i make it so no pin number can be used twice, if there are
+          enough of the same number, find_match() will not work because
+          it will go right instead of left or vice versa, always missing
+          a potential correct match.
+
+          Played with it on a RB simulator. In this context that would mean
+          that they have the same pin number. Name is unrelated to this issue.
