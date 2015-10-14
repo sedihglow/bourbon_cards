@@ -9,6 +9,11 @@
 #include <assert.h>
 #include "red_black.h"
 
+#define BLACK 0  /* black color flag */
+#define RED   1  /* red color flag */
+#define LEFT  0  /* left child */
+#define RIGHT 1  /* right child */
+
                    /* static prototypes for tree operation */
                    /* static functions #{{{ */
 
@@ -105,7 +110,7 @@ uint32_t give_data(rbTree *tree, card_s *toAdd)/*#{{{*/
 
 uint32_t place_data(rbTree *tree, card_s *toAdd)/*#{{{*/
 {
-    uint32_t lastTurn;
+    uint32_t lastTurn = 0;
     rbNode *newNode = NULL;   /* holds the located of newest node for checks */
     rbNode *current = NULL;   /* current pointer for traversal */
     rbNode *previous = NULL;  /* previous pointer for traversal */
@@ -137,13 +142,15 @@ uint32_t place_data(rbTree *tree, card_s *toAdd)/*#{{{*/
         errMsg("give_data: new node failed to alloc");
         return 0;
     } 
-
+    
+    /* Since a card_s is passed, and data gets set to a pointer to card_s,
+       There is no need to allocate this data. 
     newNode -> data = (card_s*) malloc(sizeof(card_s*));
     if(newNode -> data == NULL)
     {
         errMsg("give_data: data failed to alloc");
         return 0;
-    } 
+    } */
 
     newNode -> data        = toAdd;
     newNode -> parent      = previous;
@@ -637,7 +644,7 @@ rbNode* retrieve_match(rbNode *node, const char *toFind, const uint32_t pin)/*#{
         return NULL;}
 
     if(pin == node -> data -> pinNum && 
-        strncmp(toFind, node -> data -> name, MAX_NAME) == 0){
+        strcmp(toFind, node -> data -> name) == 0){
         return node;}
 
     if(pin < node -> data -> pinNum)
@@ -701,3 +708,9 @@ uint32_t display_rbTree(rbNode *node)/*#{{{*/
 
     return 1;
 } /* end display_all #}}} */
+
+/* undef's to clean up namespace #{{{ */
+#undef BLACK
+#undef RED
+#undef LEFT
+#undef RIGHT /*#}}}*/

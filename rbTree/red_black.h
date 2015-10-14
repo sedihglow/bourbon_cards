@@ -18,14 +18,6 @@
 #include "../sedhead.h"
 #include "../card.h"   /* holds card data. node -> data points to */
 
-#define CHILD 2  /* ammout of children per node */
-#define BLACK 0  /* black color flag */
-#define RED   1  /* red color flag */
-#define LEFT  0  /* left child */
-#define RIGHT 1  /* right child */
-
-
-
 /* retreive the color of the given rbNode */
 #define find_rbcolor(node) (((node) == NULL) ? BLACK : (node) -> cflag)
 
@@ -52,7 +44,7 @@ typedef struct RBnode
     uint32_t cflag;             /* black = 0, red = 1 */
 
     struct RBnode *parent;      /* parent of current node */
-    struct RBnode *child[CHILD];/* child 1/2 (index 0/1) */
+    struct RBnode *child[2];    /* child 1/2 (index 0/1) */
 } rbNode;
 
 /* holds a root pointer to an entire RB tree */

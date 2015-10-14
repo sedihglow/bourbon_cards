@@ -64,19 +64,22 @@ typedef struct Card
 {                                                                            \
     int32_t __i__ = 0;                                                       \
     int32_t _toPtrLen_ = strlen((fromPtr) -> name) + 1;                      \
+                                                                             \
     free((toPtr) -> name);                                                   \
     (toPtr) -> name = (char*) malloc(sizeof(char)*_toPtrLen_);               \
     strncpy((toPtr) -> name, (fromPtr) -> name, _toPtrLen_);                 \
+                                                                             \
     memset((toPtr) -> name, 0, strlen((fromPtr) -> name) + 1);               \
     for(/*i=0*/; __i__ < MAX_WS ; ++__i__){                                  \
         (toPtr) -> drank[__i__] = (fromPtr) -> drank[__i__];}                \
+                                                                             \
     (toPtr) -> pinNum = (fromPtr) -> pinNum;                                 \
     (toPtr) -> whiskCount = (fromPtr) -> whiskCount;                         \
 } /* end copy_card #}}} */
 
 /* frees all the data in a card, including the card itself */
 #define delete_card(cardDel){ /*#{{{*/ \
-    free_all(cardDel -> name, cardDel -> drank, cardDel);}/* end delete_card #}}}*/
+    free_all((cardDel) -> name, (cardDel) -> drank, (cardDel));}/* end delete_card #}}}*/
 
 /* creates and initializes a card.
    -Sets pinNum
@@ -94,6 +97,7 @@ static inline card_s* create_card(uint32_t pin, char *name)/*#{{{*/
     len = strlen(name) + 1;
     newCard -> name = (char*) malloc(sizeof(char) * len);
     strncpy(newCard -> name, name, len);
+
     newCard -> drank = (uint32_t*) malloc(sizeof(uint32_t) * MAX_WS);
     memset(newCard -> drank, 0, sizeof(uint32_t) * MAX_WS);
     newCard -> pinNum     = pin;

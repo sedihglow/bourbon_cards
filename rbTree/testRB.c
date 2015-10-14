@@ -16,7 +16,7 @@
 #include "../err_handle/err_handle.h"/* error handling functions */
 #include "../get_num/get_num.h"      /* string conversions */
 
-/* arg1 = # of inserts, arg 2 = # of removals arg3 = mod */
+/* arg1 = # of inserts, arg 2 = # of removals */
 int32_t main(int32_t argc, char *argv[])
 {
     /* rb tree to test */
@@ -30,21 +30,18 @@ int32_t main(int32_t argc, char *argv[])
     uint32_t totalData = 0;    /* total data count */
     uint32_t i = 0;
     card_s *cardInsert = NULL; /* card to be inserted into the RB tree */
-    char *testName = (char*) malloc(sizeof(char) * MAX_NAME);
-    sprintf(testName, "name1212");
-    printf("testName: %s",testName);
+    char testName[] = {"name1212"};
 
     /* seed random for insertion/removal testing. Using time for convenience */
-    srandom(1);
+    //srandom(1);
 
     /* check main args */
-    if(argc != 4){
-        noerrExit("Usage: $ program #inserts #removals modValue\n\n");}
+    if(argc != 3){
+        noerrExit("Usage: $ program #inserts #removals \n\n");}
     
     /* convert main args */
     insertions = getu32_t(argv[1], 0, (char*)NULL); /* # of insertions */
     removals   = getu32_t(argv[2], 0, (char*)NULL); /* # of removals */
-    modVal     = getu32_t(argv[3], 0, (char*)NULL); /* mod value */
     
     if(insertions < removals){
         noerr_msg("Warning, more removals than insertions");}
@@ -53,9 +50,10 @@ int32_t main(int32_t argc, char *argv[])
     rbTree_init(&rbTest);
         
     /* insert */
+    modVal = UINT32_MAX;
     for(/*i=0*/; i < insertions; ++i)
     {
-        pin = random() % modVal;
+        pin = --modVal;
         cardInsert = create_card(pin, testName);
 
         if(give_data(&rbTest, cardInsert) == 0){
@@ -63,10 +61,10 @@ int32_t main(int32_t argc, char *argv[])
     } 
 
     /* remove */
+    modVal = UINT32_MAX;
     for(i = 0; i < removals; ++i)
     {
-        pin = random() % modVal;
-        cardInsert = create_card(pin, testName);
+        pin = --modVal;
 
         resultCheck += remove_first(&rbTest, testName, pin);
     } 
@@ -78,7 +76,7 @@ int32_t main(int32_t argc, char *argv[])
            "Resulting node count should be: %d\n"
            "Remove found no value %d times.\n"
            "Remove was attempted %d times.\n",
-           totalData, (insertions - resultCheck), resultCheck, removals);
+           totalData, (insertions - removals), resultCheck, removals);
 
     remove_all(&rbTest);
 
