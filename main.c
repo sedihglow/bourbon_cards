@@ -7,15 +7,10 @@
 */
 
 #include <sys/types.h>
-#include <getopt.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
-#include "rbTree/red_black.h"         /* red black tree data structure */
-#include "get_num/get_num.h"          /* convert strings to numbers */
-#include "err_handle/err_handle.h"    /* error handling functions */
-#include "card.h"                     /* card information and related functions */
+#define __SED_ERR__
+#define __SED_NUM__
+#include "sedhead.h"
+#include "card.h"     /* card information and related functions */
 
 /* OR's a flag integer with the appropriate CD_FLAG basd on cmd line args */
 #define opt_arg(flags)/*#{{{*/{                \

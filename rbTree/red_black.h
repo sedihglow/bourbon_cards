@@ -18,7 +18,6 @@
 #include "../sedhead.h"
 #include "../card.h"   /* holds card data. node -> data points to */
 
-
 #define CHILD 2  /* ammout of children per node */
 #define BLACK 0  /* black color flag */
 #define RED   1  /* red color flag */

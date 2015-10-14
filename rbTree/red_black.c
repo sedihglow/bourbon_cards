@@ -5,9 +5,6 @@
 */
 
 #include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #define NDEBUG
 #include <assert.h>
 #include "red_black.h"

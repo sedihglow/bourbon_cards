@@ -16,9 +16,6 @@
 #include "../err_handle/err_handle.h"/* error handling functions */
 #include "../get_num/get_num.h"      /* string conversions */
 
-
-
-
 /* arg1 = # of inserts, arg 2 = # of removals arg3 = mod */
 int32_t main(int32_t argc, char *argv[])
 {
@@ -34,7 +31,7 @@ int32_t main(int32_t argc, char *argv[])
     uint32_t i = 0;
     card_s *cardInsert = NULL; /* card to be inserted into the RB tree */
     char *testName = (char*) malloc(sizeof(char) * MAX_NAME);
-    snprintf(testName, 9 ,"name1212\0");
+    sprintf(testName, "name1212");
     printf("testName: %s",testName);
 
     /* seed random for insertion/removal testing. Using time for convenience */

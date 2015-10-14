@@ -9,8 +9,11 @@
 #ifndef _CARD_H_
 #define _CARD_H_
 
-#include "sedhead.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
+#include "err_handle/err_handle.h"
 
 /* flags used in main, from getopt. Passed to execute_flag */
 #define CD_AC       00    /* Add new card information */
@@ -42,8 +45,6 @@
 #define MAX_WS    256   /* largest ammount a person can drink without failure */
 #define MAX_NAME  512   /* largest a persons full name can be */
 
-#ifndef _CARD_
-#define _CARD_
 /* NOTE: it may be better to make drank **drank rather than *drank and only
          allocate 50 at a time to save memory since 50 is each milestone.
          This will require adjusting the add_whiskey function. Keep it in mind
@@ -57,18 +58,20 @@ typedef struct Card
     uint32_t whiskCount; /* current number of whiskeys drank */
 
 } card_s;
-#endif
 
 /* takes two card pointers, copys a card to another card */
-#define copy_card(toPtr, fromPtr)/*#{{{*/                   \
-{                                                           \
-    int32_t __i__ = 0;                                      \
-    strncpy((toPtr) -> name, (fromPtr) -> name, MAX_NAME);  \
-    memset((toPtr) -> name, 0, sizeof(uint32_t)*250);       \
-    for(/*i=0*/; __i__ < MAX_WS ; ++__i__){                 \
-        (toPtr) -> name[__i__] = (fromPtr) -> name[__i__];} \
-    (toPtr) -> pinNum = (fromPtr) -> pinNum;                \
-    (toPtr) -> whiskCount = (fromPtr) -> whiskCount;        \
+#define copy_card(toPtr, fromPtr)/*#{{{*/                                    \
+{                                                                            \
+    int32_t __i__ = 0;                                                       \
+    int32_t _toPtrLen_ = strlen((fromPtr) -> name) + 1;                      \
+    free((toPtr) -> name);                                                   \
+    (toPtr) -> name = (char*) malloc(sizeof(char)*_toPtrLen_);               \
+    strncpy((toPtr) -> name, (fromPtr) -> name, _toPtrLen_);                 \
+    memset((toPtr) -> name, 0, strlen((fromPtr) -> name) + 1);               \
+    for(/*i=0*/; __i__ < MAX_WS ; ++__i__){                                  \
+        (toPtr) -> drank[__i__] = (fromPtr) -> drank[__i__];}                \
+    (toPtr) -> pinNum = (fromPtr) -> pinNum;                                 \
+    (toPtr) -> whiskCount = (fromPtr) -> whiskCount;                         \
 } /* end copy_card #}}} */
 
 /* frees all the data in a card, including the card itself */

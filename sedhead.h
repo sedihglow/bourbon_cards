@@ -14,24 +14,24 @@
 #include <sys/types.h>
 #include <stdio.h>                  
 #include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 #include <getopt.h>
 #include <time.h>
-#include <sys/time.h>
 
 
 #ifdef __SED_ERR__
     #include "err_handle/err_handle.h"  /* error handling functions */
 #endif
 #ifdef __SED_NUM__
-    /* header i used to convert strings to int types */
-    #include "get_num/get_num.h" 
+    #include "get_num/get_num.h"        /* convert strings to int types */
 #endif
 
 #ifdef __SED_LINUX__
     #include <sys/stat.h>
     #include <unistd.h>
     #include <fcntl.h>
+    #include <sys/time.h>
 #endif
 
 
