@@ -13,32 +13,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
-#include "err_handle/err_handle.h"
+#define __SED_ERR__
+#define __SED_NUM__
+#include "sedhead.h"
 
 /* flags used in main, from getopt. Passed to execute_flag */
-#define CD_AC       00    /* Add new card information */
-#define CD_RC       01    /* Remove card information */
-#define CD_NDATA    02    /* New Database information */
-#define CD_D        04    /* Display */
-#define CD_C        010   /* Comment */
-#define CD_W        020   /* Whiskey */
-#define CD_N        040   /* Name */
-#define CD_S        0100  /* search (used with CD_NDATA) */
+#define CD_AC       01    /* Add new card information */
+#define CD_RC       02    /* Remove card information */
+#define CD_NDATA    04    /* New Database information */
+#define CD_D        010   /* Display */
+#define CD_C        020   /* Comment */
+#define CD_W        040   /* Whiskey */
+#define CD_N        0100  /* Name */
+#define CD_S        0200  /* search (used with CD_NDATA) */
 
 /* flags used in execute_flag to inform called functions on what to execute.
    Definitions match [options] from the command line. see man.txt */
-#define CD_AW       00    /* -aw */
-#define CD_ANW      01    /* -anw */
-#define CD_RN       02    /* -rn */
-#define CD_RW       04    /* -rw */
-#define CD_D_       010   /* -d */
-#define CD_DW       020   /* -dw */
-#define CD_DC       040   /* -dc */
-#define CD_DSW      0100  /* -dsw */
-#define CD_DSN      0200  /* -dsn */
-#define CD_NW       0400  /* -nw */
-#define CD_NN       01000 /* -nn */
-#define CD_C_       02000 /* -c */
+#define CD_AW       01    /* -aw */
+#define CD_ANW      02    /* -anw */
+#define CD_RN       03    /* -rn */
+#define CD_RW       010   /* -rw */
+#define CD_D_       020   /* -d */
+#define CD_DW       040   /* -dw */
+#define CD_DC       0100  /* -dc */
+#define CD_DSW      0200  /* -dsw */
+#define CD_DSN      0400  /* -dsn */
+#define CD_NW       01000 /* -nw */
+#define CD_NN       02000 /* -nn */
+#define CD_C_       04000 /* -c */
 /* octoBaller */
 
 /* max name for a person on a card. big names are big. see google. */

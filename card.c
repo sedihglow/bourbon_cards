@@ -18,8 +18,18 @@
 
 int32_t add_opt(uint32_t flags, char **args)/*#{{{*/
 {
-    /* args holds at least 2 pointers. If the flag  */
-     
+    char *name = NULL;    /* name on card */
+    char *whisk = NULL;   /* name of whiskey */
+    uint32_t pin = 0;     /* pin number on card */
+
+    if(args == NULL){
+        errnumExit(EINVAL, "add_opt: args was null, nothing to do.");}
+    
+    name = args[0]; 
+    whisk = args[1];
+    pin = getu32_t(args[2], 0, "setting pin");
+
+
+
+    return 1;
 } /* end add_opt #}}} */
-
-
