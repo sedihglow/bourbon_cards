@@ -88,16 +88,25 @@ typedef enum {false, true} Bool;
 /* clears the input buffer using variable char ch; and getchar (). */
 #define clear_buff(ch) while(((ch) = getchar()) != '\n' && (ch) != EOF)
 
+/* get 1 character from stdin using getchar, clear buffer afterwards if
+   needed */
+#define getChar(input)/*#{{{*/        \
+{                                     \
+    char _c_h_ = '\0';                \
+    if(((input) = getchar()) != '\n'){\
+        clear_buff(_c_h_);}           \
+} /* end getChar #}}} */
+
 /* get a line of input from a buffer, clears the buffer if required */
 #define getLineInput(input, max, fpntr, len)\
 {                                           \
-    char __ch__ = '\0'                      \
+    char __c_h__ = '\0'                     \
     fgets((input),(max),(fpntr));           \
     (len) = strlen((input)) - 1;            \
     if(input[(len)] == '\n'){               \
         input[(len)] = '\0';}               \
     else{                                   \
-        clear_buff(__ch__); }               \
+        clear_buff(__c_h__); }              \
 } /* end getLineInput */
 
                     /* other */

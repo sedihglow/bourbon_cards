@@ -14,19 +14,20 @@
 
 /* OR's a flag integer with the appropriate CD_FLAG basd on cmd line args */
 #define opt_arg(flags)/*#{{{*/{                \
-    while(optarg != '\0')                      \
+    while(*optarg != '\0')                     \
     {                                          \
         (flags) |= (*optarg == 'n') ? CD_N :   \
                    (*optarg == 'w') ? CD_W :   \
                    (*optarg == 'c') ? CD_C :   \
                    (*optarg == 's') ? CD_S : 0;\
+        ++optarg;                              \
     }                                          \
 } /* end opt_arg #}}} */
 
-#define execute_flag(flag)/*#{{{*/                                       \
-{                                                                        \
-    (flag & CD_AC)    ? ((flag & CD_W) ? add_opt(CD_AW, argv+optind)     \
-                                       : add_opt(CD_ANW, argv+optind))  :\
+#define execute_flag(flag)/*#{{{*/                                                    \
+{                                                                                     \
+    (flag & CD_AC)    ? ((flag & CD_W && flag & CD_N) ? add_opt(CD_ANW, argv+optind)  \
+                                                      : add_opt(CD_AW, argv+optind)) :\
     (flag & CD_RC)    ? ((flag & CD_W) ? 0/* -rw */                 \
                                        : 0/* -rn */)  :             \
     (flag & CD_S)     ? ((flag & CD_W) ? 0/* -dsw */                \
@@ -43,7 +44,8 @@
 int32_t main(int32_t argc, char *argv[])
 {
     int32_t opt = 0;             /* awpt Kappa */
-    int32_t flags = 0;           /* shows what options were chosen */
+    uint32_t flags = 0;          /* shows what options were chosen */
+    uint32_t temp = 0;
 
     while((opt = getopt(argc, argv, "a:r:d::n:c")) != -1)
     {
@@ -63,9 +65,9 @@ int32_t main(int32_t argc, char *argv[])
     if(flags == 0 && argc != 4){
         errnumExit(EINVAL, "[options] is optional. $card [opt] [name] [whiskey]"
                            " [number]");}
-    
+
     if(flags == 0){
-        flags |= (CD_AC | CD_N | CD_W);}
+        flags |= (CD_AC | CD_W);}
 
     execute_flag(flags);
 
