@@ -682,7 +682,9 @@ rbNode* replace_predecessor(rbNode *node)/*#{{{*/
 } /* end replace_predecessor #}}} */
            
                 /* display */
-
+/* JAMES TODO: test the display tree function. This is probably only going to
+               be used for debugging since we will only be displaying a couple
+               cards, not the entire effing tree. */
 uint32_t display_all(rbTree *tree)/*#{{{*/
 {
     if(!tree || !tree -> root)

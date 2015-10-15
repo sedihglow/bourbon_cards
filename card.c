@@ -20,7 +20,7 @@
    returns: 1 on success, 0 on error.
    errors:
 */
-static card_s *get_card(char *name, uint32_t pin);
+static card_s *get_card(char *Restrict name, uint32_t pin);
 
 /* 
    adds a whiskey to an existing card
@@ -59,7 +59,7 @@ static int32_t add_whiskey_to_card(char *name, uint32_t whiskNum, uint32_t pin)/
    returns:
    errors:
 */
-static int32_t add_card(card_s *newCard)/*#{{{*/
+static int32_t add_card(card_s *Restrict newCard)/*#{{{*/
 {
 
     
@@ -87,27 +87,23 @@ int32_t add_opt(uint32_t flags, char **args)/*#{{{*/
         /* if identify whisk returns no whiskey found, display what was typed in,
            aswell as similar names found in the database. Spell check it and ask
            if any of the similar ones found are corrects. Y/N */
+        
     } 
 
     /* search for location of card, add a new whiskey */
     if(flags & CD_AW &&
        add_whiskey_to_card(name, whisk, pin) == -1)
     {   /* error occured, whiskey existed on the card */
-        do
-        {
-            printf("\n%s is allready drank on %s's card.\n"
-                   "Would you like to enter a different whiskey?\n"
-                    "(Y/N)===> ", args[1], name);
-            getChar(input);
-            input = toupper(input);
-        }while(input != 'Y' && input != 'N');
-    } /* end if */
+        yesNo(input, "\n%s is allready drank on %s's card.\n"
+                     "Would you like to enter a different whiskey?\n"
+                     "(Y/N)===> ", args[1], name);
+    } 
     else
     {   /* using a new card, insert a new card into the tree */
         newCard = create_card(name, pin);
         add_card(newCard);
     }
 
-    printf("\nflag: %d name: %s whisk: %s pin: %u\n", flags, name, whisk, pin); 
+    printf("\nflag: %d name: %s whisk: %s pin: %u\n", flags, name, whisk, pin);
     return 1;
 } /* end add_opt #}}} */
