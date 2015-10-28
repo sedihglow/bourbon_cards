@@ -10,32 +10,21 @@
    etc. etc... for -ds, -d, -c, -n */
 
 #include <sys/types.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
 #include "card.h"
-
-/* 
-   returns a pointer to the card that needs to be manipulated
-   returns: 1 on success, 0 on error.
-   errors:
-*/
-static card_s *get_card(char *Restrict name, uint32_t pin);
-
+                    /* static functions */
 /* 
    adds a whiskey to an existing card
    returns: 1 on success, 0 on error.
    errors:
 */
-static int32_t add_whiskey_to_card(char *name, uint32_t whiskNum, uint32_t pin)/*#{{{*/
+static int32_t add_whiskey_to_card(rbTree_s *cards, char *name, int32_t whiskNum, int32_t pin)/*#{{{*/
 {
     card_s *toEdit = NULL;
-    uint32_t *current = NULL;
-    uint32_t newTotal = NULL;
+    int32_t *current = NULL;
+    int32_t newTotal = NULL;
 
     /* get the card that the whiskey needs to be added into */
-    toEdit = get_card(name, pin);
-
+    toEdit = rb_find(cards, name, pin);
 
     /* go to the end of the drank array and fill in whisk while making sure
        the whiskey does not allready exist */
@@ -50,7 +39,7 @@ static int32_t add_whiskey_to_card(char *name, uint32_t whiskNum, uint32_t pin)/
     
     *current = whiskNum;
     ++newTotal;
-    toEdit -> whiskCount;
+    ++(toEdit -> whiskCount);
     return 1;
 } /* end add_whiskey_to_card #}}} */
 
@@ -62,44 +51,55 @@ static int32_t add_whiskey_to_card(char *name, uint32_t whiskNum, uint32_t pin)/
 static int32_t add_card(card_s *Restrict newCard)/*#{{{*/
 {
 
-    
     return 1;
 } /* end add_card #}}} */
 
+                    /* header functions */
+int32_t identify_whisk(char *whisk)/*#{{{*/
+{
+    /* get the node which the whiskey belongs to. */
 
-int32_t add_opt(uint32_t flags, char **args)/*#{{{*/
+    /* if the node does not exist, double check the spelling with the user
+       using whatever spell check i come up with */
+
+    /* if the node exists, and we have it, return the whiskNum */
+} /* end identify_whisk #}}} */
+
+int32_t add_opt(rbTree_s *cards, int32_t flags, char **args)/*#{{{*/
 {
     card_s *newCard = NULL; /* card to be inserted if -anw */
     char *name = NULL;      /* name on card */
-    uint32_t whisk = NULL;  /* name of whiskey */
-    uint32_t pin = 0;       /* pin number on card */
+    int32_t whisk = NULL;   /* name of whiskey */
+    int32_t pin = 0;        /* pin number on card */
     char input = '\0';      /* input from user */
 
     if(args == NULL){
         errnumExit(EINVAL, "add_opt: args was null, nothing to do.");}
-    
+
     /* set components of the card culled from args */
     name = args[0]; 
     pin = getu32_t(args[2], 0, "setting pin");
-    
-    if(whisk = identify_whisk(args[1]) == -1)
+
+    if((whisk = identify_whisk(args[1])) == -1)
     {
-        /* if identify whisk returns no whiskey found, display what was typed in,
+        /* TODO:
+           if identify whisk returns no whiskey found, display what was typed in,
            aswell as similar names found in the database. Spell check it and ask
            if any of the similar ones found are corrects. Y/N */
-        
     } 
 
     /* search for location of card, add a new whiskey */
     if(flags & CD_AW &&
-       add_whiskey_to_card(name, whisk, pin) == -1)
-    {   /* error occured, whiskey existed on the card */
+       add_whiskey_to_card(cards, name, whisk, pin) == -1)
+    {   
+        /* error occured, whiskey existed on the card */
         yesNo(input, "\n%s is allready drank on %s's card.\n"
                      "Would you like to enter a different whiskey?\n"
                      "(Y/N)===> ", args[1], name);
     } 
     else
-    {   /* using a new card, insert a new card into the tree */
+    {   
+        /* using a new card, insert a new card into the tree */
         newCard = create_card(name, pin);
         add_card(newCard);
     }
@@ -107,3 +107,4 @@ int32_t add_opt(uint32_t flags, char **args)/*#{{{*/
     printf("\nflag: %d name: %s whisk: %s pin: %u\n", flags, name, whisk, pin);
     return 1;
 } /* end add_opt #}}} */
+

@@ -30,7 +30,7 @@
 void errMsg(const char *fstring, ...);
 
 /* does not terminate, does not print errno information */
-void noerr_msg(const char *fstring, ...);
+void noerrMsg(const char *fstring, ...);
 
 /* uses exit() to terminate, errno for errnum */
 void errExit(const char *fstring, ...) NORETURN;

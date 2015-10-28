@@ -110,7 +110,7 @@ void errMsg(const char *fstring, ...)/*#{{{*/
     errno = sverr;
 } /* end errMsg #}}} */
 
-void noerr_msg(const char *fstring, ...)/*#{{{*/
+void noerrMsg(const char *fstring, ...)/*#{{{*/
 {
     va_list vargList;
 
@@ -141,7 +141,7 @@ void err_exit(const char *fstring, ...)/*#{{{*/
     terminate(_EXIT_EH);
 } /* end err_exit #}}} */
 
-void errnumExit(register int32_t errnum, const char *fstring, ...)/*#{{{*/
+void errnumExit(int32_t errnum, const char *fstring, ...)/*#{{{*/
 {
     va_list vargList;
 

@@ -19,74 +19,74 @@
 
                 /* insertion */
 /* enter in a data value, return 1 if success, 0 if failure */
-static uint32_t place_data(rbTree *tree, card_s *toAdd);
+static uint32_t place_data(rbTree_s *tree, card_s *toAdd);
 
                 /* insertion cases */
 /* checks all the cases conforming to the red-black tree algorithm for insert */
-static void check_insert_cases(rbTree *tree, rbNode *current);
+static void check_insert_cases(rbTree_s *tree, rbNode_s *current);
 /* case 1: N is the root node */
-static uint32_t insert_case_1(rbNode *node, rbNode *parent);
+static uint32_t insert_case_1(rbNode_s *node, rbNode_s *parent);
 /* case 2: N's parent is black */
-static uint32_t insert_case_2(rbNode *parent);
+static uint32_t insert_case_2(rbNode_s *parent);
 /* case 3: N's parent and uncle are red */
-static uint32_t insert_case_3(rbTree *tree, rbNode *parent, rbNode *grand, rbNode *uncle);
+static uint32_t insert_case_3(rbTree_s *tree, rbNode_s *parent, rbNode_s *grand, rbNode_s *uncle);
 /* case 4: N is added to the to grandparent -> child[LEFT] -> child[RIGHT]
                             OR
            N is added to the grandparent -> child[RIGHT] -> child[LEFT] */
-static uint32_t insert_case_4(rbTree *tree, rbNode *node, rbNode *parent, rbNode *grand);
+static uint32_t insert_case_4(rbTree_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand);
 /* case 5: N is added to grandparent -> child[LEFT] -> child[LEFT]
                             OR
           N is added to grandparent -> child[RIGHT] -> child[RIGHT] */
-static void insert_case_5(rbTree *tree, rbNode *node, rbNode *parent, rbNode *grand);
+static void insert_case_5(rbTree_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand);
 
                 /* deletion */
 /* remove the given node from the tree */
-static uint32_t remove_node(rbTree *tree, rbNode *match);
+static uint32_t remove_node(rbTree_s *tree, rbNode_s *match);
 
 /* removes everything from the tree. returns 1 if success, 0 if failure */
-static uint32_t remove_rbTree(rbNode **node);
+static uint32_t remove_rbTree(rbNode_s **node);
 
                 /* removal cases */
 /* case 1: replacement node N is the nwew root */
-static void removal_case_1(rbTree *tree, rbNode *node);
+static void removal_case_1(rbTree_s *tree, rbNode_s *node);
 /* case 2: S is red */
-static void removal_case_2(rbTree *tree, rbNode *node);
+static void removal_case_2(rbTree_s *tree, rbNode_s *node);
 /* case 3: parent, sibling, and the siblings children are all black */
-static void removal_case_3(rbTree *tree, rbNode *node);
+static void removal_case_3(rbTree_s *tree, rbNode_s *node);
 /* case 4: S & S's children are black, parent is red */
-static void removal_case_4(rbTree *tree, rbNode *node);
+static void removal_case_4(rbTree_s *tree, rbNode_s *node);
 /* case 5: S is black, S's left child is red, right child is black, N is left
    child of its parent. */
-static void removal_case_5(rbTree *tree, rbNode *node);
+static void removal_case_5(rbTree_s *tree, rbNode_s *node);
 /* case 6: S is black, S's right child is red, N is left child of its parent */
-static void removal_case_6(rbTree *tree, rbNode *node);
+static void removal_case_6(rbTree_s *tree, rbNode_s *node);
 
                 /* display */
 /* display every nodes data, and its color/flag */
-static uint32_t display_rbTree(rbNode *node);
+static uint32_t display_rbTree(rbNode_s *node);
 
                 /* utility functions */
 /* count every instance of a piece of data, return count */
-static uint32_t count_data(rbNode *node, const char *toCount);
-/* return the total ammount of nodes in the rbTree */
-static uint32_t count_total(rbNode *node);
+static uint32_t count_data(rbNode_s *node, const char *toCount);
+/* return the total ammount of nodes in the rbTree_s */
+static uint32_t count_total(rbNode_s *node);
 
                /* red black tree utility */
 /* rotate a node left, parent = node -> parent */
-static void left_rotate(rbTree *tree, rbNode *node);
+static void left_rotate(rbTree_s *tree, rbNode_s *node);
 /* rotate a node right */
-static void right_rotate(rbTree *tree, rbNode *node);
+static void right_rotate(rbTree_s *tree, rbNode_s *node);
 /* retrieve the node that has a match */
-static rbNode* retrieve_match(rbNode *node, const char *toFind, const uint32_t pin);
+static rbNode_s* rb_match(rbNode_s *node, const char *toFind, const int32_t pin);
 /* find in order predecessor, replace data with node, return predecessor */
-static rbNode* replace_predecessor(rbNode *node);
+static rbNode_s* replace_predecessor(rbNode_s *node);
 
                 /* end static functions #}}} */
 
 
                    /* initializations */
 
-void rbTree_init(rbTree *tree)/*#{{{*/
+void rbTree_init(rbTree_s *tree)/*#{{{*/
 {
     /* check if tree is allready made for the pointer */
     assert(tree != NULL);
@@ -97,23 +97,23 @@ void rbTree_init(rbTree *tree)/*#{{{*/
 
                    /* insertion */
 
-uint32_t give_data(rbTree *tree, card_s *toAdd)/*#{{{*/
+uint32_t give_data(rbTree_s *tree, card_s *toAdd)/*#{{{*/
 {
     if(!tree)
     {
-        noerr_msg("give_data: Tree is NULL");
+        noerrMsg("give_data: Tree is NULL");
         return 0;
     }
 
     return place_data(tree, toAdd);
 } /* end give_data #}}} */
 
-uint32_t place_data(rbTree *tree, card_s *toAdd)/*#{{{*/
+uint32_t place_data(rbTree_s *tree, card_s *toAdd)/*#{{{*/
 {
     uint32_t lastTurn = 0;
-    rbNode *newNode = NULL;   /* holds the located of newest node for checks */
-    rbNode *current = NULL;   /* current pointer for traversal */
-    rbNode *previous = NULL;  /* previous pointer for traversal */
+    rbNode_s *newNode = NULL;   /* holds the located of newest node for checks */
+    rbNode_s *current = NULL;   /* current pointer for traversal */
+    rbNode_s *previous = NULL;  /* previous pointer for traversal */
 
     current = tree -> root;
 
@@ -136,7 +136,7 @@ uint32_t place_data(rbTree *tree, card_s *toAdd)/*#{{{*/
     } /* end while */
     
     /* allocate and set the new node to be added */
-    newNode = (rbNode*) malloc(sizeof(rbNode));
+    newNode = (rbNode_s*) malloc(sizeof(rbNode_s));
     if(newNode == NULL)
     {
         errMsg("give_data: new node failed to alloc");
@@ -168,11 +168,11 @@ uint32_t place_data(rbTree *tree, card_s *toAdd)/*#{{{*/
     return 1;
 } /* end give_data #}}} */
 
-void check_insert_cases(rbTree *tree, rbNode *current)/*#{{{*/
+void check_insert_cases(rbTree_s *tree, rbNode_s *current)/*#{{{*/
 {
-    rbNode *grand = NULL;  /* grand of current node */
-    rbNode *uncle = NULL;  /* uncle of current node */
-    rbNode *parent = NULL; /* parent of current node */
+    rbNode_s *grand = NULL;  /* grand of current node */
+    rbNode_s *uncle = NULL;  /* uncle of current node */
+    rbNode_s *parent = NULL; /* parent of current node */
     
     /* initialization */
     parent = current -> parent; /* current will always exist in this implementation */
@@ -201,7 +201,7 @@ void check_insert_cases(rbTree *tree, rbNode *current)/*#{{{*/
     insert_case_5(tree, current, parent, grand);
 } /* end check_insert_cases #}}} */
 
-uint32_t insert_case_1(rbNode *node, rbNode *parent)/*#{{{*/
+uint32_t insert_case_1(rbNode_s *node, rbNode_s *parent)/*#{{{*/
 {
     /* if node is top of tree (no parent) */
     if(!parent)
@@ -214,7 +214,7 @@ uint32_t insert_case_1(rbNode *node, rbNode *parent)/*#{{{*/
     return 0;
 } /* end insert_case_1 #}}} */
 
-uint32_t insert_case_2(rbNode *parent)/*#{{{*/
+uint32_t insert_case_2(rbNode_s *parent)/*#{{{*/
 {
     /* if parent is black */
     if(parent && !parent -> cflag){
@@ -224,7 +224,7 @@ uint32_t insert_case_2(rbNode *parent)/*#{{{*/
     return 0;
 } /* end insert_case_2 #}}} */
 
-uint32_t insert_case_3(rbTree *tree, rbNode *parent, rbNode *grand, rbNode *uncle)/*#{{{*/
+uint32_t insert_case_3(rbTree_s *tree, rbNode_s *parent, rbNode_s *grand, rbNode_s *uncle)/*#{{{*/
 {
     /* if the grand and  uncle exists and its color is red */
     if(uncle && uncle -> cflag)
@@ -242,7 +242,7 @@ uint32_t insert_case_3(rbTree *tree, rbNode *parent, rbNode *grand, rbNode *uncl
     return 0;
 } /* end insert_case_3 #}}} */
 
-uint32_t insert_case_4(rbTree *tree, rbNode *node, rbNode *parent, rbNode *grand)/*#{{{*/
+uint32_t insert_case_4(rbTree_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand)/*#{{{*/
 {
     if(node == parent -> child[RIGHT] && parent == grand -> child[LEFT])
     {
@@ -269,7 +269,7 @@ uint32_t insert_case_4(rbTree *tree, rbNode *node, rbNode *parent, rbNode *grand
     return 0;
 } /* end insert_case_4 #}}} */
 
-void insert_case_5(rbTree *tree, rbNode *node, rbNode *parent, rbNode *grand)/*#{{{*/
+void insert_case_5(rbTree_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand)/*#{{{*/
 {
     if(node == parent -> child[LEFT] && parent == grand -> child[LEFT])
     {
@@ -293,18 +293,18 @@ void insert_case_5(rbTree *tree, rbNode *node, rbNode *parent, rbNode *grand)/*#
 
                    /* deletion */
 
-uint32_t remove_first(rbTree *tree, const char *toRemove, const uint32_t pin)/*#{{{*/
+uint32_t remove_first(rbTree_s *tree, const char *toRemove, const int32_t pin)/*#{{{*/
 {
-    rbNode *match = NULL;  /* node that matched toRemove */
+    rbNode_s *match = NULL;  /* node that matched toRemove */
 
     if(!tree)
     {
-        noerr_msg("remove_first: tree not initialized, nothing to remove.");
+        noerrMsg("remove_first: tree not initialized, nothing to remove.");
         return 0;
     }
 
     /* find the node that has matching data, match will be parent -> child */
-    match = retrieve_match(tree -> root, toRemove, pin);
+    match = rb_match(tree -> root, toRemove, pin);
 
     if(remove_node(tree, match)){
         return 1;}
@@ -316,7 +316,7 @@ uint32_t remove_first(rbTree *tree, const char *toRemove, const uint32_t pin)/*#
              to be removed. Much of the tree changes with removal, therefore
              this may be a required lag as appose to doing it in 1 search. 
              More analysis is required for me to be 100% certin */
-uint32_t remove_each(rbTree *tree, const char *toRemove, const uint32_t pin)/*#{{{*/
+uint32_t remove_each(rbTree_s *tree, const char *toRemove, const int32_t pin)/*#{{{*/
 {   
     uint32_t removals = 0;
     
@@ -327,18 +327,18 @@ uint32_t remove_each(rbTree *tree, const char *toRemove, const uint32_t pin)/*#{
     return removals;
 } /* end remove_each #}}} */
 
-void remove_all(rbTree *tree)/*#{{{*/
+void remove_all(rbTree_s *tree)/*#{{{*/
 {
     if(!tree && !tree -> root)
     {
-        noerr_msg("remove_all: tree not initialized, nothing to remove.");
+        noerrMsg("remove_all: tree not initialized, nothing to remove.");
         return;
     } /* end if */
 
     remove_rbTree(&tree -> root);
 } /* end remove_all #}}} */
 
-uint32_t remove_rbTree(rbNode **node)/*#{{{*/
+uint32_t remove_rbTree(rbNode_s **node)/*#{{{*/
 {
     if(*node == NULL){
         return 0;}
@@ -363,10 +363,10 @@ uint32_t remove_rbTree(rbNode **node)/*#{{{*/
 
                   /* removal cases */
 
-uint32_t remove_node(rbTree *tree, rbNode *match) /*#{{{*/
+uint32_t remove_node(rbTree_s *tree, rbNode_s *match) /*#{{{*/
 {
-    rbNode *child = NULL; /* childs of node to be free */
-    rbNode *pred = NULL;  /* predecessor of node - match */
+    rbNode_s *child = NULL; /* childs of node to be free */
+    rbNode_s *pred = NULL;  /* predecessor of node - match */
 
     if(match == NULL){
         return 0;} /* no match to find */
@@ -412,16 +412,16 @@ uint32_t remove_node(rbTree *tree, rbNode *match) /*#{{{*/
     return 1;
 } /* end remove_node #}}} */
 
-void removal_case_1(rbTree *tree, rbNode *node)/*#{{{*/ 
+void removal_case_1(rbTree_s *tree, rbNode_s *node)/*#{{{*/ 
 {
     /* nodes parent is NULL */
     if(node -> parent != NULL){
         removal_case_2(tree, node);}
 } /* end removal_case_1 #}}} */
 
-void removal_case_2(rbTree *tree, rbNode *node)/*#{{{*/
+void removal_case_2(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
-    rbNode *sibling = NULL;
+    rbNode_s *sibling = NULL;
     sibling = find_sibling(node);
     
     /* if sibling is red */
@@ -438,9 +438,9 @@ void removal_case_2(rbTree *tree, rbNode *node)/*#{{{*/
     removal_case_3(tree, node);
 } /* end removal_case_2 #}}} */
 
-void removal_case_3(rbTree *tree, rbNode *node)/*#{{{*/
+void removal_case_3(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
-    rbNode *sibling = find_sibling(node);
+    rbNode_s *sibling = find_sibling(node);
     int32_t cLeft = find_rbcolor(sibling -> child[LEFT]);
     int32_t cRight = find_rbcolor(sibling -> child[RIGHT]);
 
@@ -458,9 +458,9 @@ void removal_case_3(rbTree *tree, rbNode *node)/*#{{{*/
     } /* end else */
 } /* end removal_case_3 #}}} */
 
-void removal_case_4(rbTree *tree, rbNode *node)/*#{{{*/
+void removal_case_4(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
-    rbNode *sibling = find_sibling(node);
+    rbNode_s *sibling = find_sibling(node);
     int32_t cLeft = find_rbcolor(sibling -> child[LEFT]);
     int32_t cRight = find_rbcolor(sibling -> child[RIGHT]);
     
@@ -478,9 +478,9 @@ void removal_case_4(rbTree *tree, rbNode *node)/*#{{{*/
     } /* end else */
 } /* end removal_case_4 #}}} */
 
-void removal_case_5(rbTree *tree, rbNode *node)/*#{{{*/
+void removal_case_5(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
-    rbNode *sibling = find_sibling(node);
+    rbNode_s *sibling = find_sibling(node);
     int32_t cLeft = find_rbcolor(sibling -> child[LEFT]);
     int32_t cRight = find_rbcolor(sibling -> child[RIGHT]);
 
@@ -510,9 +510,9 @@ void removal_case_5(rbTree *tree, rbNode *node)/*#{{{*/
     removal_case_6(tree, node);
 } /* end removal_case_5 #}}} */
 
-void removal_case_6(rbTree *tree, rbNode *node)/*#{{{*/
+void removal_case_6(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
-    rbNode *sibling = find_sibling(node);
+    rbNode_s *sibling = find_sibling(node);
 
     sibling -> cflag = node -> parent -> cflag;
     node -> parent -> cflag = BLACK;
@@ -536,12 +536,12 @@ void removal_case_6(rbTree *tree, rbNode *node)/*#{{{*/
 
                  /* utility */
 
-uint32_t data_count(rbTree *tree, const char *toCount)/*#{{{*/
+uint32_t data_count(rbTree_s *tree, const char *toCount)/*#{{{*/
 {
     return count_data(tree -> root ,toCount);
 } /* end data_count #}}} */
 
-uint32_t count_data(rbNode *node, const char *toCount)/*#{{{*/
+uint32_t count_data(rbNode_s *node, const char *toCount)/*#{{{*/
 {
     uint32_t match = 0; /* total times match was found */
 
@@ -555,7 +555,7 @@ uint32_t count_data(rbNode *node, const char *toCount)/*#{{{*/
            + count_data(node -> child[LEFT], toCount) + match;
 } /* end count_data #}}} */
 
-uint32_t total_data_count(rbTree *tree)/*#{{{*/
+uint32_t total_data_count(rbTree_s *tree)/*#{{{*/
 {
     if(!tree || !tree -> root){
         return 0;}
@@ -563,7 +563,7 @@ uint32_t total_data_count(rbTree *tree)/*#{{{*/
     return count_total(tree -> root);
 } /* end total_data_count #}}} */
 
-uint32_t count_total(rbNode *node)/*#{{{*/
+uint32_t count_total(rbNode_s *node)/*#{{{*/
 {
     if(!node){
         return 0;}
@@ -572,11 +572,11 @@ uint32_t count_total(rbNode *node)/*#{{{*/
            + 1;
 } /* end count_total #}}} */
 
-inline void left_rotate(rbTree *tree, rbNode *node)/*#{{{*/
+inline void left_rotate(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
     /* save nodes right, and nodes parent */
-    rbNode *sRight = node -> child[RIGHT];
-    rbNode *nParent = node -> parent;
+    rbNode_s *sRight = node -> child[RIGHT];
+    rbNode_s *nParent = node -> parent;
 
     /* fix root */
     if(node -> parent == NULL){
@@ -603,11 +603,11 @@ inline void left_rotate(rbTree *tree, rbNode *node)/*#{{{*/
         node -> child[RIGHT] -> parent = node;}
 } /* end left_rotate #}}} */
 
-inline void right_rotate(rbTree *tree, rbNode *node)/*#{{{*/
+inline void right_rotate(rbTree_s *tree, rbNode_s *node)/*#{{{*/
 {
     /* save nodes left, and nodes parent */
-    rbNode *sLeft = node -> child[LEFT];
-    rbNode *nParent = node -> parent;
+    rbNode_s *sLeft = node -> child[LEFT];
+    rbNode_s *nParent = node -> parent;
     
     /* fix root */
     if(node -> parent == NULL){
@@ -633,12 +633,14 @@ inline void right_rotate(rbTree *tree, rbNode *node)/*#{{{*/
         node -> child[LEFT] -> parent = node;}
 } /* end right_rotate #}}} */
 
-rbNode* find_match(rbTree *tree, const char *toFind, const uint32_t pin)/*#{{{*/
+struct Card* rb_find(rbTree_s *tree, const char *toFind, const int32_t pin)/*#{{{*/
 {
-    return retrieve_match(tree -> root, toFind, pin);
+    rbNode_s *temp = NULL;
+    temp = rb_match(tree -> root, toFind, pin);
+    return temp -> data;
 } /* end find_place #}}} */
 
-rbNode* retrieve_match(rbNode *node, const char *toFind, const uint32_t pin)/*#{{{*/
+rbNode_s* rb_match(rbNode_s *node, const char *toFind, const int32_t pin)/*#{{{*/
 {
     if(node == NULL){
         return NULL;}
@@ -649,18 +651,18 @@ rbNode* retrieve_match(rbNode *node, const char *toFind, const uint32_t pin)/*#{
 
     if(pin < node -> data -> pinNum)
     {
-        return retrieve_match(node -> child[LEFT], toFind, pin);
+        return rb_match(node -> child[LEFT], toFind, pin);
     } /* end if **/
     else
     {
         assert(pin > node -> data -> pinNum);
-        return retrieve_match(node -> child[RIGHT], toFind, pin);
+        return rb_match(node -> child[RIGHT], toFind, pin);
     } /* end else */
 } /* end find_place #}}} */
                 
-rbNode* replace_predecessor(rbNode *node)/*#{{{*/
+rbNode_s* replace_predecessor(rbNode_s *node)/*#{{{*/
 {
-    rbNode *current = NULL;
+    rbNode_s *current = NULL;
 
     assert(node != NULL);
 
@@ -682,21 +684,21 @@ rbNode* replace_predecessor(rbNode *node)/*#{{{*/
 } /* end replace_predecessor #}}} */
            
                 /* display */
-/* JAMES TODO: test the display tree function. This is probably only going to
+/* TODO: test the display tree function. This is probably only going to
                be used for debugging since we will only be displaying a couple
                cards, not the entire effing tree. */
-uint32_t display_all(rbTree *tree)/*#{{{*/
+uint32_t display_all(rbTree_s *tree)/*#{{{*/
 {
     if(!tree || !tree -> root)
-    {
-        noerr_msg("display_all: tree is empty, nothing to display");
+   {
+        noerrMsg("display_all: tree is empty, nothing to display");
         return 0;
     }
 
     return display_rbTree(tree -> root);
 } /* end display_all #}}} */
 
-uint32_t display_rbTree(rbNode *node)/*#{{{*/
+uint32_t display_rbTree(rbNode_s *node)/*#{{{*/
 {
     if(node == NULL){
         return 0;}

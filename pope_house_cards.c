@@ -4,12 +4,25 @@
     non-integrated solution to the card crap
     - have them take their card home and bring it back. If they lose it, its
       all recorded. FUCK EM
+
+    TODO: NOTE: when taking in input from the command line from the server, make
+                sure to toupper. Also make everything after a space in a name
+                a capital letter..... These are tiny important bullshits :D
+
+                Making all the names all cap would be a easy out for this stuff
+                but meh.... figure it out
+
+                The main issue to take into consideration is the fact that 
+                the servers will be entering things into the command line
+                quickly while they are slammed. Since this is not integerated
+                into the POS system at the restaraunt, making everything passed
+                into argv, and making the dictionary of whiskeys, toupper into
+                all capital letters. This will allow the server to screw up
+                capital and lower case letters and still get the input they
+                want
 */
 
 #include <sys/types.h>
-#define __SED_ERR__
-#define __SED_NUM__
-#include "sedhead.h"
 #include "card.h"     /* card information and related functions */
 
 /* OR's a flag integer with the appropriate CD_FLAG basd on cmd line args */
@@ -24,10 +37,12 @@
     }                                          \
 } /* end opt_arg #}}} */
 
-#define execute_flag(flag)/*#{{{*/                                                    \
+/* TODO: whiskTable might not have to be passed into the options here. Look at
+         how to contain it so only the functions in whiskeyData do that? */
+#define execute_flag(cards, whiskTable, flag)/*#{{{*/                                        \
 {                                                                                     \
-    (flag & CD_AC)    ? ((flag & CD_W && flag & CD_N) ? add_opt(CD_ANW, argv+optind)  \
-                                                      : add_opt(CD_AW, argv+optind)) :\
+    (flag & CD_AC)    ? ((flag & CD_W && flag & CD_N) ? add_opt(cards, CD_ANW, argv+optind)  \
+                                                      : add_opt(cards, CD_AW, argv+optind)) :\
     (flag & CD_RC)    ? ((flag & CD_W) ? 0/* -rw */                 \
                                        : 0/* -rn */)  :             \
     (flag & CD_S)     ? ((flag & CD_W) ? 0/* -dsw */                \
@@ -43,9 +58,8 @@
 
 int32_t main(int32_t argc, char *argv[])
 {
-    int32_t opt = 0;             /* awpt Kappa */
-    uint32_t flags = 0;          /* shows what options were chosen */
-    uint32_t temp = 0;
+    int32_t opt = 0;            /* awpt Kappa */
+    int32_t flags = 0;          /* shows what options were chosen */
 
     while((opt = getopt(argc, argv, "a:r:d::n:c")) != -1)
     {
@@ -69,7 +83,15 @@ int32_t main(int32_t argc, char *argv[])
     if(flags == 0){
         flags |= (CD_AC | CD_W);}
 
-    execute_flag(flags);
+    /* main loads in all the previous data from the saved file or whatever.
+       It will fill the hashTable with whiskey information.
+       It will fill the red black tree with card information.
+
+       Then we operate on it after this is done. This means we will have
+       a table and a tree made in main, and they will be sent into the
+       appropriate functions */
+
+    execute_flag(NULL, NULL, flags);
 
     return 0;
 } /* end main */
