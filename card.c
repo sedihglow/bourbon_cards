@@ -59,18 +59,20 @@ int32_t identify_whisk(char *whisk)/*#{{{*/
 {
     /* get the node which the whiskey belongs to. */
 
-    /* if the node does not exist, double check the spelling with the user
+    /* TODO: if the node does not exist, double check the spelling with the user
        using whatever spell check i come up with */
 
     /* if the node exists, and we have it, return the whiskNum */
+
+    return 0;
 } /* end identify_whisk #}}} */
 
 int32_t add_opt(rbTree_s *cards, int32_t flags, char **args)/*#{{{*/
 {
     card_s *newCard = NULL; /* card to be inserted if -anw */
-    char *name = NULL;      /* name on card */
-    int32_t whisk = NULL;   /* name of whiskey */
-    int32_t pin = 0;        /* pin number on card */
+    char *name = NULL;      /* name on card args[0] */
+    int32_t whisk = NULL;   /* identity of whiskey name args[2] */
+    int32_t pin = 0;        /* pin number on card args[1]*/
     char input = '\0';      /* input from user */
 
     if(args == NULL){
@@ -78,14 +80,18 @@ int32_t add_opt(rbTree_s *cards, int32_t flags, char **args)/*#{{{*/
 
     /* set components of the card culled from args */
     name = args[0]; 
-    pin = getu32_t(args[2], 0, "setting pin");
+    pin = get32_t(args[2], 0, "setting pin");
 
+    /* identify the whiskey entered,  */
     if((whisk = identify_whisk(args[1])) == -1)
     {
         /* TODO:
            if identify whisk returns no whiskey found, display what was typed in,
            aswell as similar names found in the database. Spell check it and ask
-           if any of the similar ones found are corrects. Y/N */
+           if any of the similar ones found are corrects. Y/N, 
+
+           The spell check may be its own function, it might be called
+           inside identify whiskey.*/
     } 
 
     /* search for location of card, add a new whiskey */
@@ -104,7 +110,7 @@ int32_t add_opt(rbTree_s *cards, int32_t flags, char **args)/*#{{{*/
         add_card(newCard);
     }
 
-    printf("\nflag: %d name: %s whisk: %s pin: %u\n", flags, name, whisk, pin);
+    printf("\nflag: %"PRId32" name: %s whisk: %s pin: %"PRId32"\n", flags, name, args[1], pin);
     return 1;
 } /* end add_opt #}}} */
 

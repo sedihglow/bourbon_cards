@@ -16,9 +16,10 @@
 
 typedef struct Node
 {
-    char *data;        /* holds character data */
-    struct Node *next; /* points to the next struct in the chain */
-} node_s;
+    char *whiskName;    /* holds character data */
+    struct Node *next;  /* points to the next struct in the chain */
+    int32_t whiskNum;   /* number corresponding to the whisk name */
+} whiskey_s;
 
 typedef struct Hashtable
 {
@@ -40,7 +41,7 @@ typedef struct Hashtable
     if((hashPntr) == NULL)                                                    \
     {                                                                         \
         (hashPntr) = (hashTable_s*) malloc(sizeof(hashTable_s));              \
-        (hashPntr) -> table = (node_s**) malloc(sizeof(node_s*) * _TBL_SIZE_);\
+        (hashPntr) -> table = (whiskey_s**) malloc(sizeof(whiskey_s*) * _TBL_SIZE_);\
     }                                                                         \
     null_table((hashPntr));                                                   \
 } /* end table_init */
@@ -52,9 +53,9 @@ int32_t table_insert(hashTable_s *Restrict hTable, char *Restrict toAdd);
 int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove);
 
 /* retrieves the address of the node in question. 
-   returns: NULL if match was not found. node_s if match was found. 
+   returns: NULL if match was not found. whiskey_s if match was found. 
    errors: */
-node_s* retrieve_match(hashTable_s *Restrict hTable, char *Restrict toFind);
+whiskey_s* retrieve_match(hashTable_s *Restrict hTable, char *Restrict toFind);
 
 /* deallocate the entire hash table */
 void dealloc_table(hashTable_s *Restrict hTable);
@@ -63,4 +64,4 @@ void dealloc_table(hashTable_s *Restrict hTable);
 void hashtable_disp(hashTable_s *Restrict hTable);
 
 /* display chain */
-void chain_disp(node_s *Restrict chain);
+void chain_disp(whiskey_s *Restrict chain);

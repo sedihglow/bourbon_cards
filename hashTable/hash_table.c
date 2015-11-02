@@ -12,35 +12,36 @@
 #include <assert.h>
 
 /* initialize a node */
-static inline void init_node(node_s **Restrict toInit)/*#{{{*/
+static inline void init_node(whiskey_s **Restrict toInit)/*#{{{*/
 {
     if(*toInit == NULL)
     {
-        *toInit = (node_s*) malloc(sizeof(node_s));
+        *toInit = (whiskey_s*) malloc(sizeof(whiskey_s));
         if(*toInit == NULL){
             errExit("insert_table: malloc failure");}
     }
 
-    (*toInit) -> data = NULL;
+    (*toInit) -> whiskName = NULL;
+    (*toInit) -> whiskNum = 0;
     (*toInit) -> next = NULL;
 } /* end node_init #}}} */
 
 /* this can be easily altered when conforming to a different project.
-   This copy's a nodes data (whever char* or struct *) into the node */
-static inline void give_data(node_s *Restrict to, char *Restrict newData)/*#{{{*/
+   This copy's a nodes whiskName (whever char* or struct *) into the node */
+static inline void give_whiskName(whiskey_s *Restrict to, char *Restrict newData)/*#{{{*/
 {
     int32_t len = 0;
 
     if(newData == NULL){
-        errnumExit(EINVAL, "give_data: data in from is NULL. cannot copy.");}
+        errnumExit(EINVAL, "give_whiskName: whiskName in from is NULL. cannot copy.");}
 
     len = strlen(newData) + 1;
 
-    if(to -> data == NULL){
-        to -> data = (char*) malloc(sizeof(char) * len);}
+    if(to -> whiskName == NULL){
+        to -> whiskName = (char*) malloc(sizeof(char) * len);}
 
-    strncpy(to -> data, newData, len);
-} /* end give_data #}}} */
+    strncpy(to -> whiskName, newData, len);
+} /* end give_whiskName #}}} */
 
 /* hash a string by adding up the total of the ascii characters and moding it
    by the size of the hash table to aquire the index.
@@ -60,13 +61,13 @@ static int32_t hashString(char *Restrict keyString)/*#{{{*/
     return stringTotal % _TBL_SIZE_;
 } /* end hashString #}}} */
 
-/* Retrieves a matching node based on the given data toFind.
+/* Retrieves a matching node based on the given whiskName toFind.
    Returns: Pointer to matching node. NULL if node was not found.
    Errors: calls errExit if no table was passed into function */
-node_s* hash_match(hashTable_s *Restrict hTable, char *Restrict toFind)/*#{{{*/
+whiskey_s* hash_match(hashTable_s *Restrict hTable, char *Restrict toFind)/*#{{{*/
 {
     int32_t index = 0; /* index result of hash */
-    node_s *current = NULL;
+    whiskey_s *current = NULL;
 
     if(hTable == NULL){
         errnumExit(EINVAL, "hash_match: Missing table");}
@@ -85,11 +86,11 @@ node_s* hash_match(hashTable_s *Restrict hTable, char *Restrict toFind)/*#{{{*/
     if(current == NULL){
         return NULL;}
     
-    /* NOTE: checks if string data is there. change this 
+    /* NOTE: checks if string whiskName is there. change this 
                      when altering for specific project */
     while(current != NULL)
     {
-        if(strcmp(current -> data, toFind) == 0){
+        if(strcmp(current -> whiskName, toFind) == 0){
             return current;}
         current = current -> next;
     }
@@ -100,10 +101,10 @@ node_s* hash_match(hashTable_s *Restrict hTable, char *Restrict toFind)/*#{{{*/
 /* insert a new node into the hash table, inserts at head of chain.
    Returns: 1 on success, -1 if there was not enough room to malloc
             0 if nothing to add, bad call values.
-   Errors : EINVAL, malloced data was NULL. */
+   Errors : EINVAL, malloced whiskName was NULL. */
 int32_t table_insert(hashTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*/
 {
-    node_s *temp = NULL;
+    whiskey_s *temp = NULL;
     int32_t index = 0;
 
     if(toAdd == NULL || hTable == NULL)
@@ -118,7 +119,7 @@ int32_t table_insert(hashTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*/
     index = hashString(toAdd);
 
     /* adds a new node into the table */
-    give_data(temp, toAdd);
+    give_whiskName(temp, toAdd);
 
     temp -> next = hTable -> table[index];
     hTable -> table[index] = temp;
@@ -130,15 +131,15 @@ int32_t table_insert(hashTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*/
    chain.
    Returns: 1 on successfull removal, 0 if nothing was removed.
    Errors : */
-static int32_t dealloc_node(node_s *chain, node_s *prev, char *Restrict toRemove)/*#{{{*/
+static int32_t dealloc_node(whiskey_s *chain, whiskey_s *prev, char *Restrict toRemove)/*#{{{*/
 {
     if(chain == NULL){
         return 0;}
 
-    if(strcmp(chain -> data, toRemove) == 0)
+    if(strcmp(chain -> whiskName, toRemove) == 0)
     {
         prev -> next = chain -> next;
-        free(chain -> data);
+        free(chain -> whiskName);
         free(chain);
         return 1;
     }
@@ -151,7 +152,7 @@ static int32_t dealloc_node(node_s *chain, node_s *prev, char *Restrict toRemove
    Errors: noerrExit if no table passed */
 int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove)/*#{{{*/
 {
-    node_s *temp = NULL;
+    whiskey_s *temp = NULL;
     int32_t index = 0;  /* index result of hash */
 
     if(hTable == NULL){
@@ -167,10 +168,10 @@ int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove)/*
     if(temp == NULL){
         return 0;}
     
-    if(strcmp(temp -> data, toRemove) == 0)
+    if(strcmp(temp -> whiskName, toRemove) == 0)
     {
         hTable -> table[index] = temp -> next;
-        free(temp -> data);
+        free(temp -> whiskName);
         free(temp);
         return 1;
     } 
@@ -181,8 +182,8 @@ int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove)/*
 /* deallocate the entire hash table from memory. */
 void dealloc_table(hashTable_s *Restrict hTable) /*#{{{*/
 {
-    node_s *tmpHead = NULL; /* gets set to a pntr index in table */
-    node_s *nxtNode = NULL; /* gets set to the next node in a chain */
+    whiskey_s *tmpHead = NULL; /* gets set to a pntr index in table */
+    whiskey_s *nxtNode = NULL; /* gets set to the next node in a chain */
     int32_t i = 0;
 
     if(hTable != NULL)
@@ -200,16 +201,16 @@ void dealloc_table(hashTable_s *Restrict hTable) /*#{{{*/
                 if(nxtNode != NULL)
                 {
                    tmpHead -> next = nxtNode -> next;
-                   /* NOTE: data will need to be freed differently 
+                   /* NOTE: whiskName will need to be freed differently 
                                   depening on implementation */
-                   free(nxtNode -> data);
+                   free(nxtNode -> whiskName);
                    free(nxtNode);
                    nxtNode = NULL;
                 }
                 else
                 {  
                     assert(tmpHead -> next == NULL);
-                    free(tmpHead -> data);
+                    free(tmpHead -> whiskName);
                     free(tmpHead);
                     tmpHead = NULL;
                 } /* end else */
@@ -240,7 +241,7 @@ void hashtable_disp(hashTable_s *Restrict hTable)/*#{{{*/
 } /* end hashtable_disp #}}} */
 
 /* display chain */
-void chain_disp(node_s *Restrict chain)/*#{{{*/
+void chain_disp(whiskey_s *Restrict chain)/*#{{{*/
 {
     int32_t i = 0;
 
@@ -250,7 +251,7 @@ void chain_disp(node_s *Restrict chain)/*#{{{*/
     while(chain != NULL)
     {
         ++i;
-        printf("\nNode #%d\n%s\n", i, chain -> data);
+        printf("\nNode #%d\n%s\n", i, chain -> whiskName);
         chain = chain -> next;
     }
 } /* end chain_disp #}}} */
