@@ -9,19 +9,21 @@
    1 functions will handle all -r functions. (-rw, -rn) using diff flags.
    etc. etc... for -ds, -d, -c, -n */
 
-#include <sys/types.h>
 #include "card.h"
                     /* static functions */
 /* 
-   adds a whiskey to an existing card
-   returns: 1 on success, 0 on error.
-   errors:
+   Adds a whiskey to an existing card
+   Returns: 1 on success, -1 on error. 0 when not found.
+   Errors: EINVAL - null pointer was passed.
 */
-static int32_t add_whiskey_to_card(rbTree_s *cards, char *name, int32_t whiskNum, int32_t pin)/*#{{{*/
+static int32_t add_whiskey_to_card(rbTree_s *Restrict cards, char *Restrict name,/*#{{{*/
+                                   int32_t whiskNum, int32_t pin)
 {
     card_s *toEdit = NULL;
     int32_t *current = NULL;
     int32_t newTotal = NULL;
+
+    assert(cards != NULL || name != NULL);
 
     /* get the card that the whiskey needs to be added into */
     toEdit = rb_find(cards, name, pin);
@@ -32,7 +34,7 @@ static int32_t add_whiskey_to_card(rbTree_s *cards, char *name, int32_t whiskNum
     do
     {
         if(whiskNum == *current){
-            return -1;}
+            return 0;}
         ++current;
         ++newTotal;
     }while(*current != 0 && newTotal != 0);
@@ -55,19 +57,20 @@ static int32_t add_card(card_s *Restrict newCard)/*#{{{*/
 } /* end add_card #}}} */
 
                     /* header functions */
-int32_t identify_whisk(char *whisk)/*#{{{*/
+int32_t identify_whisk(char *Restrict whisk)/*#{{{*/
 {
+
+    assert(whisk != NULL);
+
     /* get the node which the whiskey belongs to. */
 
-    /* TODO: if the node does not exist, double check the spelling with the user
-       using whatever spell check i come up with */
 
-    /* if the node exists, and we have it, return the whiskNum */
+    /* if the node exists, and we have it, return the whiskNum.  */
 
     return 0;
 } /* end identify_whisk #}}} */
 
-int32_t add_opt(rbTree_s *cards, int32_t flags, char **args)/*#{{{*/
+int32_t add_opt(rbTree_s *Restrict cards, int32_t flags, char **args)/*#{{{*/
 {
     card_s *newCard = NULL; /* card to be inserted if -anw */
     char *name = NULL;      /* name on card args[0] */
@@ -96,15 +99,17 @@ int32_t add_opt(rbTree_s *cards, int32_t flags, char **args)/*#{{{*/
 
     /* search for location of card, add a new whiskey */
     if(flags & CD_AW &&
-       add_whiskey_to_card(cards, name, whisk, pin) == -1)
+       add_whiskey_to_card(cards, name, whisk, pin) == 0)
     {   
         /* error occured, whiskey existed on the card */
         yesNo(input, "\n%s is allready drank on %s's card.\n"
                      "Would you like to enter a different whiskey?\n"
                      "(Y/N)===> ", args[1], name);
+        /* TODO: implement calling add_whiskey_to_card again if the
+                 response was yes. */
     } 
     else
-    {   
+    {  
         /* using a new card, insert a new card into the tree */
         newCard = create_card(name, pin);
         add_card(newCard);

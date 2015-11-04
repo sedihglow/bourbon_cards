@@ -64,7 +64,7 @@ static int32_t hashString(char *Restrict keyString)/*#{{{*/
 /* Retrieves a matching node based on the given whiskName toFind.
    Returns: Pointer to matching node. NULL if node was not found.
    Errors: calls errExit if no table was passed into function */
-whiskey_s* hash_match(hashTable_s *Restrict hTable, char *Restrict toFind)/*#{{{*/
+whiskey_s* whisk_match(whiskTable_s *Restrict hTable, char *Restrict toFind)/*#{{{*/
 {
     int32_t index = 0; /* index result of hash */
     whiskey_s *current = NULL;
@@ -102,7 +102,7 @@ whiskey_s* hash_match(hashTable_s *Restrict hTable, char *Restrict toFind)/*#{{{
    Returns: 1 on success, -1 if there was not enough room to malloc
             0 if nothing to add, bad call values.
    Errors : EINVAL, malloced whiskName was NULL. */
-int32_t table_insert(hashTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*/
+int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*/
 {
     whiskey_s *temp = NULL;
     int32_t index = 0;
@@ -150,7 +150,7 @@ static int32_t dealloc_node(whiskey_s *chain, whiskey_s *prev, char *Restrict to
 /* remove a node from the hash table.
    Returns: 1 on succes, 0 if node was not found.
    Errors: noerrExit if no table passed */
-int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove)/*#{{{*/
+int32_t hashNode_remove(whiskTable_s *Restrict hTable, char *Restrict toRemove)/*#{{{*/
 {
     whiskey_s *temp = NULL;
     int32_t index = 0;  /* index result of hash */
@@ -180,7 +180,7 @@ int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove)/*
 } /* end remove #}}} */
 
 /* deallocate the entire hash table from memory. */
-void dealloc_table(hashTable_s *Restrict hTable) /*#{{{*/
+void dealloc_table(whiskTable_s *Restrict hTable) /*#{{{*/
 {
     whiskey_s *tmpHead = NULL; /* gets set to a pntr index in table */
     whiskey_s *nxtNode = NULL; /* gets set to the next node in a chain */
@@ -224,7 +224,7 @@ void dealloc_table(hashTable_s *Restrict hTable) /*#{{{*/
 } /* end dealloc_table #}}} */
 
 /* display all the contents of the hash table */
-void hashtable_disp(hashTable_s *Restrict hTable)/*#{{{*/
+void hashtable_disp(whiskTable_s *Restrict hTable)/*#{{{*/
 {
     int32_t i = 0;
     

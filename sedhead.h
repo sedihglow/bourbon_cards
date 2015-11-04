@@ -20,6 +20,9 @@
 #include <time.h>
 #include <ctype.h>
 
+/*#define NDEBUG*/
+#include <assert.h>
+
 
 #ifdef __SED_ERR__
     #include "err_handle/err_handle.h"  /* error handling functions */

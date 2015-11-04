@@ -13,6 +13,7 @@
 #define _CARD_H_
 
 #include "rbTree/red_black.h"
+#include "whiskeyData/whiskList.h"
 
 /* flags used in main, from getopt. Passed to execute_flag */
 #define CD_AC       0x1   /* Add new card information */
@@ -38,16 +39,16 @@
 #define CD_NW       0x400  /* -nw */
 #define CD_NN       0x800  /* -nn */
 #define CD_C_       0x1000 /* -c */
-/* octoBaller */
 
 /* identifies a whiskey, returning its unique identification number
-   returns: whiskey identification
-   errors : */
-int32_t identify_whisk(char *whisk);
+   returns: whiskey identification number, -1 when not found.
+   errors : EINVAL - char* is NULL.
+*/
+int32_t identify_whisk(char *Restrict whisk);
 
 /* -aw, -anw based on flag. see man.txt for information.
    Returns:  
    Errors: 
 */
-int32_t add_opt(rbTree_s *cards, int32_t flags, char **args);
+int32_t add_opt(rbTree_s *Restrict cards, int32_t flags, char **args);
 #endif

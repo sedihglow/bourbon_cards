@@ -12,6 +12,9 @@
                 Making all the names all cap would be a easy out for this stuff
                 but meh.... figure it out
 
+                All lower case letters is good too, only uppercase the name
+                in the display functions that get presented to the servers.
+
                 The main issue to take into consideration is the fact that 
                 the servers will be entering things into the command line
                 quickly while they are slammed. Since this is not integerated
@@ -37,10 +40,8 @@
     }                                          \
 } /* end opt_arg #}}} */
 
-/* TODO: whiskTable might not have to be passed into the options here. Look at
-         how to contain it so only the functions in whiskeyData do that? */
-#define execute_flag(cards, whiskTable, flag)/*#{{{*/                                        \
-{                                                                                     \
+#define execute_flag(cards, flag)/*#{{{*/                                                    \
+{                                                                                            \
     (flag & CD_AC)    ? ((flag & CD_W && flag & CD_N) ? add_opt(cards, CD_ANW, argv+optind)  \
                                                       : add_opt(cards, CD_AW, argv+optind)) :\
     (flag & CD_RC)    ? ((flag & CD_W) ? 0/* -rw */                 \
@@ -91,7 +92,7 @@ int32_t main(int32_t argc, char *argv[])
        a table and a tree made in main, and they will be sent into the
        appropriate functions */
 
-    execute_flag(NULL, NULL, flags);
+    execute_flag(NULL, flags);
 
     return 0;
 } /* end main */

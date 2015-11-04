@@ -24,44 +24,44 @@ typedef struct Node
 typedef struct Hashtable
 {
     struct Node **table; /* hash table */
-} hashTable_s;
+} whiskTable_s;
 
 /* sets all the pointers in a hash table to NULL. */
-#define null_table(hashPntr)                                                \
-{                                                                           \
-    int32_t ___Z_;                                                          \
-    for((___Z_) = 0; (___Z_) < _TBL_SIZE_; ++(___Z_)){                      \
-        (hashPntr) -> table[(___Z_)] = NULL;}                               \
+#define null_table(tablePntr)                                                \
+{                                                                            \
+    int32_t ___Z_;                                                           \
+    for((___Z_) = 0; (___Z_) < _TBL_SIZE_; ++(___Z_)){                       \
+        (tablePntr) -> table[(___Z_)] = NULL;}                               \
 } /* end null_table */
 
 /* Allocats the table itself if not allready done, then calls null_table to
    set all the pointers in the table to NULL */
-#define table_init(hashPntr)                                                  \
-{                                                                             \
-    if((hashPntr) == NULL)                                                    \
-    {                                                                         \
-        (hashPntr) = (hashTable_s*) malloc(sizeof(hashTable_s));              \
-        (hashPntr) -> table = (whiskey_s**) malloc(sizeof(whiskey_s*) * _TBL_SIZE_);\
-    }                                                                         \
-    null_table((hashPntr));                                                   \
+#define table_init(tablePntr)                                                  \
+{                                                                              \
+    if((tablePntr) == NULL)                                                    \
+    {                                                                          \
+        (tablePntr) = (whiskTable_s*) malloc(sizeof(whiskTable_s));            \
+        (tablePntr) -> table = (whiskey_s**) malloc(sizeof(whiskey_s*) * _TBL_SIZE_);\
+    }                                                                          \
+    null_table((tablePntr));                                                   \
 } /* end table_init */
 
 /* insert a new node into the hash table */
-int32_t table_insert(hashTable_s *Restrict hTable, char *Restrict toAdd);
+int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd);
 
 /* remove a node from the hash table */
-int32_t hashNode_remove(hashTable_s *Restrict hTable, char *Restrict toRemove);
+int32_t hashNode_remove(whiskTable_s *Restrict hTable, char *Restrict toRemove);
 
 /* retrieves the address of the node in question. 
    returns: NULL if match was not found. whiskey_s if match was found. 
    errors: */
-whiskey_s* retrieve_match(hashTable_s *Restrict hTable, char *Restrict toFind);
+whiskey_s* whisk_match(whiskTable_s *Restrict hTable, char *Restrict toFind);
 
 /* deallocate the entire hash table */
-void dealloc_table(hashTable_s *Restrict hTable);
+void dealloc_table(whiskTable_s *Restrict hTable);
 
 /* display all the contents of the hash table */
-void hashtable_disp(hashTable_s *Restrict hTable);
+void hashtable_disp(whiskTable_s *Restrict hTable);
 
 /* display chain */
 void chain_disp(whiskey_s *Restrict chain);
