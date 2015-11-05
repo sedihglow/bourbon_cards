@@ -23,7 +23,7 @@ static int32_t add_whiskey_to_card(rbTree_s *Restrict cards, char *Restrict name
     int32_t *current = NULL;
     int32_t newTotal = NULL;
 
-    assert(cards != NULL || name != NULL);
+    assert(cards != NULL && name != NULL);
 
     /* get the card that the whiskey needs to be added into */
     toEdit = rb_find(cards, name, pin);
@@ -57,36 +57,32 @@ static int32_t add_card(card_s *Restrict newCard)/*#{{{*/
 } /* end add_card #}}} */
 
                     /* header functions */
-int32_t identify_whisk(char *Restrict whisk)/*#{{{*/
+int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk)/*#{{{*/
 {
-
-    assert(whisk != NULL);
-
-    /* get the node which the whiskey belongs to. */
-
-
-    /* if the node exists, and we have it, return the whiskNum.  */
-
-    return 0;
+    assert(whisk != NULL && whiskData != NULL);
+    return id_whiskey(whiskData, whisk);
 } /* end identify_whisk #}}} */
 
 int32_t add_opt(rbTree_s *Restrict cards, int32_t flags, char **args)/*#{{{*/
 {
-    card_s *newCard = NULL; /* card to be inserted if -anw */
-    char *name = NULL;      /* name on card args[0] */
-    int32_t whisk = NULL;   /* identity of whiskey name args[2] */
-    int32_t pin = 0;        /* pin number on card args[1]*/
-    char input = '\0';      /* input from user */
+    card_s *newCard = NULL;           /* card to be inserted if -anw */
+    whiskTable_s *whiskData = NULL;    /* whiskey data */
+    char *name = NULL;                /* name on card args[0] */
+    int32_t whisk = NULL;             /* identity of whiskey name args[2] */
+    int32_t pin = 0;                  /* pin number on card args[1]*/
+    char input = '\0';                /* input from user */
 
     if(args == NULL){
         errnumExit(EINVAL, "add_opt: args was null, nothing to do.");}
+
+    whiskData = obtain_whiskData();
 
     /* set components of the card culled from args */
     name = args[0]; 
     pin = get32_t(args[2], 0, "setting pin");
 
     /* identify the whiskey entered,  */
-    if((whisk = identify_whisk(args[1])) == -1)
+    if((whisk = identify_whisk(whiskData, args[1])) == -1)
     {
         /* TODO:
            if identify whisk returns no whiskey found, display what was typed in,

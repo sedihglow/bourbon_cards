@@ -113,16 +113,21 @@ typedef enum {false, true} Bool;
     }while(input != 'Y' && input != 'N');                       \
 } /* end getChar_check #}}} */
 
-/* get a line of input from a buffer, clears the buffer if required */
-#define getLineInput(input, max, fpntr, len)\
-{                                           \
-    char __c_h__ = '\0'                     \
-    fgets((input),(max),(fpntr));           \
-    (len) = strlen((input)) - 1;            \
-    if(input[(len)] == '\n'){               \
-        input[(len)] = '\0';}               \
-    else{                                   \
-        clear_buff(__c_h__); }              \
+/* get a line of input from a buffer, clears the buffer if required. Input
+   must be dealloced or on the heap for compilation */
+#define getLineInput(input, max, filepntr, len)       \
+{                                                     \
+    char __c_h__ = '\0';                              \
+    if((input) == NULL){                              \
+        (input) = (char*) malloc(sizeof(char)*max);}  \
+                                                      \
+    memset((input), '\0', max);                       \
+    fgets((input),(max),(filepntr));           \
+    (len) = strlen((input)) - 1;               \
+    if(input[(len)] == '\n'){                  \
+        input[(len)] = '\0';}                  \
+    else{                                      \
+        clear_buff(__c_h__); }                 \
 } /* end getLineInput */
 
                     /* other */

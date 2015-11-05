@@ -22,6 +22,7 @@
 #define GN_NOEXIT_  0x32    /* Return 0, set errno on conversion error */
 
 #include <sys/types.h>
+#include <errno.h>
 #include <inttypes.h>
 
 /* ERROR HANDLE NOTE: If using the GN_NOEXIT_ flag, error is checked when

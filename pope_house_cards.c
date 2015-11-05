@@ -25,7 +25,6 @@
                 want
 */
 
-#include <sys/types.h>
 #include "card.h"     /* card information and related functions */
 
 /* OR's a flag integer with the appropriate CD_FLAG basd on cmd line args */

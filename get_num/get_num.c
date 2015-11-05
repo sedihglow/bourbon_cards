@@ -26,7 +26,9 @@ gnFail(const char *fname, const char *msg, const char *arg, const char *name);
 /* converts arg to a long, based on flags. fname and name used in error */
 static long long
 getNum(const char *fname, const char *arg, int32_t flags, const char *name);
-/* converts arg to a long, based on flags. fname and name used in error */ static unsigned long long 
+
+/* converts arg to a long, based on flags. fname and name used in error */ 
+static unsigned long long 
 getUnsigned(const char *fname, const char *arg, register int32_t flags, const char *name);
 /*#}}}*/
 
@@ -57,6 +59,7 @@ long long getNum(const char *fname, const char *arg, register int32_t flags, /*#
     if(arg == NULL || *arg == '\0'){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nNull or empty string.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "null or empty string", arg, name);} 
@@ -74,6 +77,7 @@ long long getNum(const char *fname, const char *arg, register int32_t flags, /*#
     if(errno != 0){   
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nConversion failed.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "strtoll() failed", arg, name);} /* end else */
@@ -82,6 +86,7 @@ long long getNum(const char *fname, const char *arg, register int32_t flags, /*#
     if(*endptr != '\0'){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nNonnumeric characters.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "nonnumeric characters", arg, name);}
@@ -90,6 +95,7 @@ long long getNum(const char *fname, const char *arg, register int32_t flags, /*#
     if((flags & GN_NONEG) && res < 0){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nNegetive value not allowed.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "negative value not allowed", arg, name);}
@@ -98,6 +104,7 @@ long long getNum(const char *fname, const char *arg, register int32_t flags, /*#
     if((flags & GN_GT_O) && res <= 0){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nValue must be > 0.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "value must be > 0", arg, name);}
@@ -115,6 +122,7 @@ unsigned long long getUnsigned(const char *fname, const char *arg,     /*#{{{*/
     if(arg == NULL || *arg == '\0'){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nNull or empty string.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "null or empty string", arg, name);} 
@@ -132,6 +140,7 @@ unsigned long long getUnsigned(const char *fname, const char *arg,     /*#{{{*/
     if(errno != 0){   
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nConversion failed.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "strtoll() failed", arg, name);}
@@ -140,6 +149,7 @@ unsigned long long getUnsigned(const char *fname, const char *arg,     /*#{{{*/
     if(*endptr != '\0'){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nNonnumeric characters.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "nonnumeric characters", arg, name);}
@@ -148,6 +158,7 @@ unsigned long long getUnsigned(const char *fname, const char *arg,     /*#{{{*/
     if((flags & GN_GT_O) && res <= 0){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nValue must be > 0.\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail(fname, "value must be > 0", arg, name);}
@@ -167,6 +178,7 @@ long getLong(const char *arg, int32_t flags, const char *varName)/*#{{{*/
     if(res > LONG_MAX || res < LONG_MIN){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nInteger was out of range\n");
+            errno = EINVAL;
             return 0;}
         else{
             gnFail("getInt", "integer out of range", arg, varName);}
@@ -201,6 +213,7 @@ int32_t get32_t(const char *arg, int32_t flags, const char *varName)/*#{{{*/
     if(res > INT32_MAX || res < INT32_MIN){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nInteger was out of range\n");
+            errno = EINVAL;
             return 0;}
         else{
         gnFail("getInt", "integer out of range", arg, varName);}
@@ -218,6 +231,7 @@ int64_t get64_t(const char *arg, int32_t flags, const char *varName)/*#{{{*/
     if(res > INT64_MAX || res < INT64_MIN){
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nInteger was out of range\n");
+            errno = EINVAL;
             return 0;}
         else{
         gnFail("getInt", "integer out of range", arg, varName);}
@@ -234,6 +248,7 @@ uint32_t getu32_t(const char *arg, int32_t flags, const char *varName)/*#{{{*/
     /* make sure the converted number is in the range of an uint32_t */
     if(res > UINT32_MAX){ /* checks for >0 in getNum */
         if(flags & GN_NOEXIT_){
+            errno = EINVAL;
             fprintf(stderr,"\nInteger was out of range\n");
             return 0;}
         else{
@@ -252,6 +267,7 @@ uint64_t getu64_t(const char *arg, int32_t flags, const char *varName)/*#{{{*/
     if(res > UINT64_MAX){ /* checks for unsigned in getNum */
         if(flags & GN_NOEXIT_){
             fprintf(stderr,"\nInteger was out of range\n");
+            errno = EINVAL;
             return 0;}
         else{
         gnFail("getUnsigned", "integer out of range", arg, varName);}

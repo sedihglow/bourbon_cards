@@ -11,6 +11,7 @@
 /*#define NDEBUG*/
 #include <assert.h>
 
+                    /* static functions */
 /* initialize a node */
 static inline void init_node(whiskey_s **Restrict toInit)/*#{{{*/
 {
@@ -20,15 +21,13 @@ static inline void init_node(whiskey_s **Restrict toInit)/*#{{{*/
         if(*toInit == NULL){
             errExit("insert_table: malloc failure");}
     }
-
-    (*toInit) -> whiskName = NULL;
-    (*toInit) -> whiskNum = 0;
-    (*toInit) -> next = NULL;
+    memset(*toInit, 0, sizeof(whiskey_s));
 } /* end node_init #}}} */
 
 /* this can be easily altered when conforming to a different project.
    This copy's a nodes whiskName (whever char* or struct *) into the node */
-static inline void give_whiskName(whiskey_s *Restrict to, char *Restrict newData)/*#{{{*/
+static inline void give_whiskInfo(whiskey_s *Restrict to, char *Restrict newData,/*#{{{*/
+                                 int32_t num)
 {
     int32_t len = 0;
 
@@ -41,7 +40,8 @@ static inline void give_whiskName(whiskey_s *Restrict to, char *Restrict newData
         to -> whiskName = (char*) malloc(sizeof(char) * len);}
 
     strncpy(to -> whiskName, newData, len);
-} /* end give_whiskName #}}} */
+    to -> whiskNum = num;
+} /* end give_whiskInfo #}}} */
 
 /* hash a string by adding up the total of the ascii characters and moding it
    by the size of the hash table to aquire the index.
@@ -60,7 +60,28 @@ static int32_t hashString(char *Restrict keyString)/*#{{{*/
     
     return stringTotal % _TBL_SIZE_;
 } /* end hashString #}}} */
+                    
+/* recursivly removes a node from the table based on toRemove from a given
+   chain.
+   Returns: 1 on successfull removal, 0 if nothing was removed.
+   Errors : */
+static int32_t dealloc_node(whiskey_s *chain, whiskey_s *prev, char *Restrict toRemove)/*#{{{*/
+{
+    if(chain == NULL){
+        return 0;}
 
+    if(strcmp(chain -> whiskName, toRemove) == 0)
+    {
+        prev -> next = chain -> next;
+        free(chain -> whiskName);
+        free(chain);
+        return 1;
+    }
+    
+    return dealloc_node(chain -> next, chain, toRemove);
+} /* end dealloc_node #}}}*/
+
+                    /* header functions */
 /* Retrieves a matching node based on the given whiskName toFind.
    Returns: Pointer to matching node. NULL if node was not found.
    Errors: calls errExit if no table was passed into function */
@@ -94,7 +115,6 @@ whiskey_s* whisk_match(whiskTable_s *Restrict hTable, char *Restrict toFind)/*#{
             return current;}
         current = current -> next;
     }
-
     return NULL;
 } /* end hash_match #}}} */
 
@@ -102,7 +122,8 @@ whiskey_s* whisk_match(whiskTable_s *Restrict hTable, char *Restrict toFind)/*#{
    Returns: 1 on success, -1 if there was not enough room to malloc
             0 if nothing to add, bad call values.
    Errors : EINVAL, malloced whiskName was NULL. */
-int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*/
+int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd, /*#{{{*/
+                     int32_t wnum)
 {
     whiskey_s *temp = NULL;
     int32_t index = 0;
@@ -119,33 +140,13 @@ int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd)/*#{{{*
     index = hashString(toAdd);
 
     /* adds a new node into the table */
-    give_whiskName(temp, toAdd);
+    give_whiskInfo(temp, toAdd, wnum);
 
     temp -> next = hTable -> table[index];
     hTable -> table[index] = temp;
     
     return 1;
 } /* end insert #}}} */
-
-/* recursivly removes a node from the table based on toRemove from a given
-   chain.
-   Returns: 1 on successfull removal, 0 if nothing was removed.
-   Errors : */
-static int32_t dealloc_node(whiskey_s *chain, whiskey_s *prev, char *Restrict toRemove)/*#{{{*/
-{
-    if(chain == NULL){
-        return 0;}
-
-    if(strcmp(chain -> whiskName, toRemove) == 0)
-    {
-        prev -> next = chain -> next;
-        free(chain -> whiskName);
-        free(chain);
-        return 1;
-    }
-    
-    return dealloc_node(chain -> next, chain, toRemove);
-} /* end dealloc_node #}}}*/
 
 /* remove a node from the hash table.
    Returns: 1 on succes, 0 if node was not found.

@@ -6,8 +6,12 @@
 
     filename: hash_table.h
 */
-
+#ifndef __SED_NUM__
+#define __SED_NUM__
+#endif
+#ifndef __SED_ERR__
 #define __SED_ERR__    /* error functions */
+#endif
 #include "../sedhead.h"
 
 
@@ -41,13 +45,18 @@ typedef struct Hashtable
     if((tablePntr) == NULL)                                                    \
     {                                                                          \
         (tablePntr) = (whiskTable_s*) malloc(sizeof(whiskTable_s));            \
-        (tablePntr) -> table = (whiskey_s**) malloc(sizeof(whiskey_s*) * _TBL_SIZE_);\
+        (tablePntr) -> table = NULL;                                           \
     }                                                                          \
+                                                                               \
+    if((tablePntr) -> table == NULL){                                          \
+        (tablePntr) -> table = (whiskey_s**) malloc(sizeof(whiskey_s*) * _TBL_SIZE_);}\
+                                                                               \
     null_table((tablePntr));                                                   \
 } /* end table_init */
 
-/* insert a new node into the hash table */
-int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd);
+/* insert a new node into the hash table 
+   Return: 0 on error 1 on success */
+int32_t table_insert(whiskTable_s *Restrict hTable, char *Restrict toAdd, int32_t wnum);
 
 /* remove a node from the hash table */
 int32_t hashNode_remove(whiskTable_s *Restrict hTable, char *Restrict toRemove);

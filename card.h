@@ -12,8 +12,8 @@
 #ifndef _CARD_H_
 #define _CARD_H_
 
-#include "rbTree/red_black.h"
 #include "whiskeyData/whiskList.h"
+#include "rbTree/red_black.h"
 
 /* flags used in main, from getopt. Passed to execute_flag */
 #define CD_AC       0x1   /* Add new card information */
@@ -44,7 +44,7 @@
    returns: whiskey identification number, -1 when not found.
    errors : EINVAL - char* is NULL.
 */
-int32_t identify_whisk(char *Restrict whisk);
+int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk);
 
 /* -aw, -anw based on flag. see man.txt for information.
    Returns:  
