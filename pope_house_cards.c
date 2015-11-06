@@ -25,7 +25,7 @@
                 want
 */
 
-#include "card.h"     /* card information and related functions */
+#include "pope.h"     /* card information and related functions */
 
 /* OR's a flag integer with the appropriate CD_FLAG basd on cmd line args */
 #define opt_arg(flags)/*#{{{*/{                \
@@ -58,8 +58,8 @@
 
 int32_t main(int32_t argc, char *argv[])
 {
-    int32_t opt = 0;            /* awpt Kappa */
-    int32_t flags = 0;          /* shows what options were chosen */
+    int32_t opt = 0;     /* awpt Kappa */
+    int32_t flags = 0;   /* shows what options were chosen */
 
     while((opt = getopt(argc, argv, "a:r:d::n:c")) != -1)
     {

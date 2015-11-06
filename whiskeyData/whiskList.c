@@ -138,16 +138,16 @@ static int32_t check_spelling(whiskTable_s *Restrict whiskData, /*#{{{*/
 
 
                     /* header functions */
-whiskTable_s* obtain_whiskData()
+whiskTable_s* obtain_whiskData(char *path)/*#{{{*/
 {
     whiskTable_s *newTable = NULL;
 
     newTable = alloc_whiskTable();
     
-    fill_whiskTable(newTable, "~/cs201/other/pope_cards/whiskData/whiskData.txt");
+    fill_whiskTable(newTable, path); 
 
     return newTable;
-}
+} /* end obtain_whiskData #}}} */
 
 whiskTable_s* alloc_whiskTable()/*#{{{*/
 {
@@ -178,7 +178,10 @@ void fill_whiskTable(whiskTable_s *Restrict whiskData, char *path)/*#{{{*/
     do
     {
         getLineInput(buffer, __BUF_S, infoWhisk, inpLen);
-        
+    
+        /* TODO: make sure that feof doesnt return EOF untill after the
+                 fgets that starts by reading nothing, rather than just getting
+                 to the EOF location. The difference is 1 read */
         if((eofRet = feof(infoWhisk)) > 0)
         {
             /* This does not get free'd here. It is stored into the hashtable.
@@ -250,7 +253,7 @@ int32_t id_whiskey(whiskTable_s *Restrict whiskData, char *Restrict whiskName)/*
         fixedName = check_whiskeyName(whiskData, whiskName);/* check spelling */
         winfo = whisk_match(whiskData, whiskName);          /* get info */
         if(fixedName == NULL || winfo == NULL){             /* check validity */
-            errExit("No similar names, whiskey name is not in the database\n");}
+            return -1;}
     }
 
     /* return the corresponding whiskey number value */

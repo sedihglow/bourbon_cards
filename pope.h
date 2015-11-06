@@ -2,18 +2,18 @@
     author: James Ross
     Functions implemented to handle the pope house card drama yo.
     
-    filename: card.h 
+    filename: pope.h 
 */
 
 /* OR(|) these together to make a command in flags. Example:  CD_AC | CD_W, add 
    whiskey to existing card */
 
 
-#ifndef _CARD_H_
-#define _CARD_H_
+#ifndef _POPE_H_
+#define _POPE_H_
 
 #include "whiskeyData/whiskList.h"
-#include "rbTree/red_black.h"
+#include "cardData/card.h"
 
 /* flags used in main, from getopt. Passed to execute_flag */
 #define CD_AC       0x1   /* Add new card information */
@@ -50,5 +50,5 @@ int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk);
    Returns:  
    Errors: 
 */
-int32_t add_opt(rbTree_s *Restrict cards, int32_t flags, char **args);
+int32_t add_opt(cardStack_s *Restrict cards, int32_t flags, char **args);
 #endif

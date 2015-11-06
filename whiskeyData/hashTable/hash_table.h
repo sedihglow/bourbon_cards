@@ -12,7 +12,7 @@
 #ifndef __SED_ERR__
 #define __SED_ERR__    /* error functions */
 #endif
-#include "../sedhead.h"
+#include "../../sed/sedhead.h"
 
 
 /* change the size of the hash table to fit the project */

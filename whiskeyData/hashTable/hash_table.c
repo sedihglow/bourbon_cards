@@ -252,7 +252,7 @@ void chain_disp(whiskey_s *Restrict chain)/*#{{{*/
     while(chain != NULL)
     {
         ++i;
-        printf("\nNode #%d\n%s\n", i, chain -> whiskName);
+        printf("\nNode #%d\n%s\n%d\n", i, chain -> whiskName, chain -> whiskNum);
         chain = chain -> next;
     }
 } /* end chain_disp #}}} */

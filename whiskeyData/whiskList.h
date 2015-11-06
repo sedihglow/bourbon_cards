@@ -1,13 +1,8 @@
 /* 
     Handles the whiskey database information.
-
-    I think card will need to have functions that call the functions 
-    defined here. Make it so cards.h is the only header required for the
-    execution of the project. 
-
     filename: whiskList.h
 */
-#include "../hashTable/hash_table.h"
+#include "hashTable/hash_table.h"
 
 #define _MAX_WNAME    100    /* Max length of a name of a whiskey */
 
@@ -16,7 +11,7 @@
    Return: returns a allocated, filled, table pointer. NULL on error
    Errors: 
 */
-whiskTable_s* obtain_whiskData();
+whiskTable_s* obtain_whiskData(char *path);
 
 /* Allocates and initializes a whiskyTable_s, returning the allocated table
    Returns: allocated, initialize whiskTable_s*
@@ -46,7 +41,7 @@ void empty_whiskTable(whiskTable_s *Restrict whiskData);
 
 /* Take in a whiskey name, get the information from the table and return the
    identification number of the whiskey 
-   Returns:
+   Returns: whiskNum, or -1 if no whiskey was found.
    Errors:
 */
 int32_t id_whiskey(whiskTable_s *Restrict whiskData, char *Restrict whiskName);

@@ -18,7 +18,7 @@
 #ifndef __SED_NUM__
 #define __SED_NUM__
 #endif
-#include "../sedhead.h"
+#include "../../sed/sedhead.h"
 
 /* retreive the color of the given rbNode_s */
 #define find_rbcolor(node) (((node) == NULL) ? BLACK : (node) -> cflag)
@@ -70,7 +70,7 @@ typedef struct RBnode
 typedef struct RBtree
 {
     struct RBnode *root;
-} rbTree_s; 
+} cardStack_s; 
 
 /* takes two card pointers, copys a card to another card */
 #define copy_card(toPtr, fromPtr)/*#{{{*/                                    \
@@ -121,39 +121,39 @@ static inline card_s* create_card(char *name, int32_t pin)/*#{{{*/
 
                 /* initializations */
 /* initialize a rb tree */
-void rbTree_init(rbTree_s *tree);
+void rbTree_init(cardStack_s *tree);
 
                 /* insertion */
 /* give a piece of data to a tree, return 1 if success, 0 if error */
-uint32_t give_data(rbTree_s *tree, card_s *toAdd);
+uint32_t give_data(cardStack_s *tree, card_s *toAdd);
 
 
                /* removal */
 /* removes the first instance of a piece of data in the tree, return 1 if
    success, 0 if toRemove was not in the tree */
 /* wrapper for first_remove */
-uint32_t remove_first(rbTree_s *tree, const char *toRemove, const int32_t pin); 
+uint32_t remove_first(cardStack_s *tree, const char *toRemove, const int32_t pin); 
 
 /* removes each node that contains toRemove's data. Returns number of nodes
    removed */
-uint32_t remove_each(rbTree_s *tree, const char *toRemove, const int32_t pin);
+uint32_t remove_each(cardStack_s *tree, const char *toRemove, const int32_t pin);
 
 /* removes everything from the tree. returns 1 if success, 0 if failure */
-void remove_all(rbTree_s *tree); /* wrapper for remove_rbTree() */
+void remove_all(cardStack_s *tree); /* wrapper for remove_rbTree() */
          
 
               /* utility functions */
 /* count every instance of a piece of data, return count */
-uint32_t data_count(rbTree_s *tree, const char *toCount); /* count_data wrapper */
+uint32_t data_count(cardStack_s *tree, const char *toCount); /* count_data wrapper */
 
 /* finds the first piece of data and returns the node's address */
-struct Card* rb_find(rbTree_s *tree, const char *toFind, const int32_t pin);
+struct Card* rb_find(cardStack_s *tree, const char *toFind, const int32_t pin);
 
-/* return the total ammount of nodes in the rbTree_s */
-uint32_t total_data_count(rbTree_s *tree);
+/* return the total ammount of nodes in the cardStack_s */
+uint32_t total_data_count(cardStack_s *tree);
 
             
              /* display functions */
 /* display every nodes data, and its color/flag */
-uint32_t display_all(rbTree_s *tree); /* wrapper for display_rbTree */
+uint32_t display_all(cardStack_s *tree); /* wrapper for display_rbTree */
 #endif
