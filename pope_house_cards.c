@@ -56,6 +56,9 @@
     errExit("Flags is zero, something unexplicable happened.");\
 } /* end execute_flag #}}} */
 
+/* TODO: This is currently designed for name to be passed into main with no
+         white space. It does not account for a first and last name, which
+         should be required. */
 int32_t main(int32_t argc, char *argv[])
 {
     int32_t opt = 0;     /* awpt Kappa */
