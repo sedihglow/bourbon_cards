@@ -26,7 +26,7 @@ static int32_t add_whiskey_to_card(cardStack_s *Restrict cards, char *Restrict n
     assert(cards != NULL && name != NULL);
 
     /* get the card that the whiskey needs to be added into */
-    toEdit = card_find(cards, name, pin);
+    toEdit = card_find(cards, pin);
 
     /* go to the end of the drank array and fill in whisk while making sure
        the whiskey does not allready exist */

@@ -67,7 +67,7 @@ static uint32_t display_rbTree(rbNode_s *node);
 
                 /* utility functions */
 /* count every instance of a piece of data, return count */
-static uint32_t count_data(rbNode_s *node, const char *toCount);
+static uint32_t count_data(rbNode_s *node, int32_t toCount);
 /* return the total ammount of nodes in the cardStack_s */
 static uint32_t count_total(rbNode_s *node);
 
@@ -77,7 +77,7 @@ static void left_rotate(cardStack_s *tree, rbNode_s *node);
 /* rotate a node right */
 static void right_rotate(cardStack_s *tree, rbNode_s *node);
 /* retrieve the node that has a match */
-static rbNode_s* rb_match(rbNode_s *node, const char *toFind, const int32_t pin);
+static rbNode_s* rb_match(rbNode_s *node, const int32_t pin);
 /* find in order predecessor, replace data with node, return predecessor */
 static rbNode_s* replace_predecessor(rbNode_s *node);
 
@@ -304,7 +304,7 @@ uint32_t remove_first(cardStack_s *tree, const char *toRemove, const int32_t pin
     }
 
     /* find the node that has matching data, match will be parent -> child */
-    match = rb_match(tree -> root, toRemove, pin);
+    match = rb_match(tree -> root, pin);
 
     if(remove_node(tree, match)){
         return 1;}
@@ -327,16 +327,16 @@ uint32_t remove_each(cardStack_s *tree, const char *toRemove, const int32_t pin)
     return removals;
 } /* end remove_each #}}} */
 
-void remove_all(cardStack_s *tree)/*#{{{*/
+void remove_allRB(cardStack_s *tree)/*#{{{*/
 {
     if(!tree && !tree -> root)
     {
-        noerrMsg("remove_all: tree not initialized, nothing to remove.");
+        noerrMsg("remove_allRB: tree not initialized, nothing to remove.");
         return;
     } /* end if */
 
     remove_rbTree(&tree -> root);
-} /* end remove_all #}}} */
+} /* end remove_allRB #}}} */
 
 uint32_t remove_rbTree(rbNode_s **node)/*#{{{*/
 {
@@ -358,7 +358,7 @@ uint32_t remove_rbTree(rbNode_s **node)/*#{{{*/
     } /* end if */
 
     return 1;
-} /* end remove_all #}}} */
+} /* end remove_rbTree #}}} */
 
 
                   /* removal cases */
@@ -536,12 +536,12 @@ void removal_case_6(cardStack_s *tree, rbNode_s *node)/*#{{{*/
 
                  /* utility */
 
-uint32_t data_count(cardStack_s *tree, const char *toCount)/*#{{{*/
+uint32_t data_count(cardStack_s *tree, int32_t pin)/*#{{{*/
 {
-    return count_data(tree -> root ,toCount);
+    return count_data(tree -> root , pin);
 } /* end data_count #}}} */
 
-uint32_t count_data(rbNode_s *node, const char *toCount)/*#{{{*/
+uint32_t count_data(rbNode_s *node, int32_t toCount)/*#{{{*/
 {
     uint32_t match = 0; /* total times match was found */
 
@@ -549,7 +549,7 @@ uint32_t count_data(rbNode_s *node, const char *toCount)/*#{{{*/
         return 0;}
     
     /* check if current nodes data is a match */
-    match = strcmp(toCount, node -> data -> name) ? 0 : 1; 
+    match = (toCount == node -> data -> pinNum) ? 0 : 1; 
 
     return count_data(node -> child[RIGHT], toCount) 
            + count_data(node -> child[LEFT], toCount) + match;
@@ -633,30 +633,29 @@ inline void right_rotate(cardStack_s *tree, rbNode_s *node)/*#{{{*/
         node -> child[LEFT] -> parent = node;}
 } /* end right_rotate #}}} */
 
-struct Card* rb_find(cardStack_s *tree, const char *toFind, const int32_t pin)/*#{{{*/
+struct Card* rb_find(cardStack_s *tree, const int32_t pin)/*#{{{*/
 {
     rbNode_s *temp = NULL;
-    temp = rb_match(tree -> root, toFind, pin);
+    temp = rb_match(tree -> root, pin);
     return temp -> data;
 } /* end find_place #}}} */
 
-rbNode_s* rb_match(rbNode_s *node, const char *toFind, const int32_t pin)/*#{{{*/
+rbNode_s* rb_match(rbNode_s *node, const int32_t pin)/*#{{{*/
 {
     if(node == NULL){
         return NULL;}
 
-    if(pin == node -> data -> pinNum && 
-        strcmp(toFind, node -> data -> name) == 0){
+    if(pin == node -> data -> pinNum){
         return node;}
 
     if(pin < node -> data -> pinNum)
     {
-        return rb_match(node -> child[LEFT], toFind, pin);
+        return rb_match(node -> child[LEFT], pin);
     } /* end if **/
     else
     {
         assert(pin > node -> data -> pinNum);
-        return rb_match(node -> child[RIGHT], toFind, pin);
+        return rb_match(node -> child[RIGHT], pin);
     } /* end else */
 } /* end find_place #}}} */
                 

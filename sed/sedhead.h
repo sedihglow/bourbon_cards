@@ -19,6 +19,7 @@
 #include <getopt.h>
 #include <time.h>
 #include <ctype.h>
+#include <limits.h>
 
 /*#define NDEBUG*/
 #include <assert.h>
@@ -36,6 +37,23 @@
     #include <unistd.h>
     #include <fcntl.h>
     #include <sys/time.h>
+
+    /* allocate an input buffer with a '\0' terminatior at the end */
+    #define allocInputBuff(fd, buff)                                           \
+    {                                                                          \
+        ssize_t _retBytes = 0;                                                 \
+        if((_retBytes = read(fd, (void*) buff, IN_BUF_-1)) == -1){             \
+            errExit("alloc_buf(): read() failure");}                           \
+        (_retBytes < IN_BUF_-1) ? (buff[_retBytes] = '\0')                     \
+                                : (buff[IN_BUF_-1] = '\0');                    \
+    } /* end allocInputBuff */
+
+    /* reset the input buffer after first allocation */
+    #define setInputBuf(fd, buff, bfPl)                                        \
+    {                                                                          \
+        allocInputbuff(fd, buff);                                                      \
+        bfPl = buff;                                                           \
+    } /* end setInpuBuf */
 #endif
 
 
@@ -94,43 +112,63 @@ typedef enum {false, true} Bool;
 
 /* get 1 character from stdin using getchar, clear buffer afterwards if
    needed */
-#define getChar(input)                \
-{                                     \
-    char _c_h_ = '\0';                \
-    if(((input) = getchar()) != '\n'){\
-        clear_buff(_c_h_);}           \
+#define getChar(input)                                                         \
+{                                                                              \
+    char _c_h_ = '\0';                                                         \
+    if(((input) = getchar()) != '\n'){                                         \
+        clear_buff(_c_h_);}                                                    \
 } /* end getChar */
 
 /* get a single character from stdin and loop untill input is correct 
    note: sets the single character to a capital letter */
-#define yesNo(input, string, ...)                               \
-{                                                               \
-    do                                                          \
-    {                                                           \
-        printf((string), __VA_ARGS__);                          \
-        getChar((input));                                       \
-        (input) = toupper((input));                             \
-    }while(input != 'Y' && input != 'N');                       \
+#define yesNo(input, string, ...)                                              \
+{                                                                              \
+    do                                                                         \
+    {                                                                          \
+        printf((string), __VA_ARGS__);                                         \
+        getChar((input));                                                      \
+        (input) = toupper((input));                                            \
+    }while(input != 'Y' && input != 'N');                                      \
 } /* end getChar_check #}}} */
 
 /* get a line of input from a buffer, clears the buffer if required. Input
    must be dealloced or on the heap for compilation */
-#define getLineInput(input, max, filepntr, len)       \
-{                                                     \
-    char __c_h__ = '\0';                              \
-    if((input) == NULL){                              \
-        (input) = (char*) malloc(sizeof(char)*max);}  \
-                                                      \
-    memset((input), '\0', max);                       \
-    fgets((input),(max),(filepntr));           \
-    (len) = strlen((input)) - 1;               \
-    if(input[(len)] == '\n'){                  \
-        input[(len)] = '\0';}                  \
-    else{                                      \
-        clear_buff(__c_h__); }                 \
+#define getLineInput(input, max, filepntr, len)                                \
+{                                                                              \
+    char __c_h__ = '\0';                                                       \
+    if((input) == NULL){                                                       \
+        (input) = (char*) malloc(sizeof(char)*max);}                           \
+                                                                               \
+    memset((input), '\0', max);                                                \
+    fgets((input),(max),(filepntr));                                           \
+    (len) = strlen((input)) - 1;                                               \
+    if(input[(len)] == '\n'){                                                  \
+        input[(len)] = '\0';}                                                  \
+    else{                                                                      \
+        clear_buff(__c_h__); }                                                 \
 } /* end getLineInput */
 
+/* Copy a variable ammount of characters from a buffer based on a given position
+   and place in resStr based on a conditional. Terminating the resStr with a '\0'
+   value.  */
+#define getBufString(fd, inBuf, bfPl, resStr, conditional)                     \
+{                                                                              \
+    int _TM_ = 0;                                                              \
+    for(_TM_ = 0; conditional; ++_TM_)                                         \
+    {                                                                          \
+        resStr[_TM_] = *bfPl;                                                  \
+        ++bfPl;                  /* increase buff placement */                 \
+        if(*bfPl == '\0'){       /* reached end of current buffer */           \
+            setInpuBuf(fd, inBuf, bfPl);}                                      \
+    } /* end for */                                                            \
+    ++bfPl;                                                                    \
+    resStr[_TM_] = '\0';                                                       \
+    if(*bfPl == '\0'){ /* reached end of current buffer */                     \
+        setInputBuf(fd, inBuf, bfPl);}                                         \
+} /* end getBufString */
+
                     /* other */
+
 /* create a bit mask for a given range of bits. start, end. (lsb,msb) */
 #define create_mask(increment, start, end, resMask)                         \
 {                                                                           \

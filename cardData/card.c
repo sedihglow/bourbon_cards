@@ -9,9 +9,6 @@
 
                     /* static functions */
 
-
-
-
                     /* header functions */
 cardStack_s* obtain_cardData(char *path)/*#{{{*/
 {
@@ -23,11 +20,14 @@ cardStack_s* obtain_cardData(char *path)/*#{{{*/
 
 cardStack_s* alloc_cardStack()/*#{{{*/
 {
-    return NULL;
+    cardStack_s *newDeck = (cardStack_s*) malloc(sizeof(cardStack_s));
+    rbTree_init(newDeck);
+    return NULL; /* newDeck will be null if malloc failed */
 } /* end alloc_cardStack #}}} */
 
 void fill_cardStack(cardStack_s *Restrict cardData, char *path)/*#{{{*/
 {
+
 
 } /* end fill_cardStack #}}} */
 
@@ -38,15 +38,26 @@ void save_cardStack(FILE *path)/*#{{{*/
 
 void empty_cardStack(cardStack_s *Restrict cardData)/*#{{{*/
 {
-
+    remove_allRB(cardData);
 } /* end empty_cardStacl #}}} */
 
-card_s* card_find(cardStack_s *Restrict cardData, char *name, int32_t pin)/*#{{{*/
+card_s* card_find(cardStack_s *Restrict cardData, int32_t pin)/*#{{{*/
 {
-    return 0;
+    return rb_find(cardData, pin);
 } /* end card_find #}}} */
 
-int32_t check_pinNum(cardStack_s *Restrict whiskData, int32_t pinNum)/*#{{{*/
+int32_t check_pinNum(cardStack_s *Restrict cardData, int32_t pinNum)/*#{{{*/
 {
-    return 0;
+    uint32_t totalCount = 0;
+
+    totalCount = data_count(cardData, pinNum);
+
+    if(totalCount > 1)
+    {
+        noerrMsg("check_pinNum: there are %u of the same pin number was found "
+                 "allready\ninside of the data. This should be resolved.", totalCount);
+        return -1;
+    }
+
+    return totalCount;
 } /* end check_pinNum #}}} */

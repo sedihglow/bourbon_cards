@@ -13,11 +13,11 @@
    Return: returns a allocated, filled, cardStack_s pointer. NULL on error
    Errors: 
 */
-cardStack_s* obtain_cardData();
+cardStack_s* obtain_cardData(char *path);
 
 /* Allocates and initializes a cardStack_s, returning the allocated table
    Returns: allocated, initialize cardStack_s*
-   Errors: Errors not handled, only potential error is not enough memory 
+   Errors: Returns null on error. 
 */
 cardStack_s* alloc_cardStack();
 
@@ -51,12 +51,12 @@ void empty_cardStack(cardStack_s *Restrict cardData);
    Returns: whiskNum, or -1 if no whiskey was found.
    Errors:
 */
-card_s* card_find(cardStack_s *Restrict cardData, char *name, int32_t pin);
+card_s* card_find(cardStack_s *Restrict cardData, int32_t pin);
 
-/* 
-   Checks if the pinNum is allready in use or not.
-   Returns: 1 if the pinNum allready exists. 0 if the pin number does not.
-   Errors:
+/* Checks if the pinNum is allready in use or not.
+   Returns: 1 if the pinNum allready exists. 0 if the pin number does not, and
+            -1 if multiple 
+   Errors: returns -1;
 */
 int32_t check_pinNum(cardStack_s *Restrict whiskData, int32_t pinNum);
 #endif

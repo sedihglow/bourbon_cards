@@ -139,15 +139,15 @@ uint32_t remove_first(cardStack_s *tree, const char *toRemove, const int32_t pin
 uint32_t remove_each(cardStack_s *tree, const char *toRemove, const int32_t pin);
 
 /* removes everything from the tree. returns 1 if success, 0 if failure */
-void remove_all(cardStack_s *tree); /* wrapper for remove_rbTree() */
+void remove_allRB(cardStack_s *tree); /* wrapper for remove_rbTree() */
          
 
               /* utility functions */
 /* count every instance of a piece of data, return count */
-uint32_t data_count(cardStack_s *tree, const char *toCount); /* count_data wrapper */
+uint32_t data_count(cardStack_s *tree, int32_t pin); /* count_data wrapper */
 
 /* finds the first piece of data and returns the node's address */
-struct Card* rb_find(cardStack_s *tree, const char *toFind, const int32_t pin);
+struct Card* rb_find(cardStack_s *tree, int32_t pin);
 
 /* return the total ammount of nodes in the cardStack_s */
 uint32_t total_data_count(cardStack_s *tree);
