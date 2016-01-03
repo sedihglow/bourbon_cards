@@ -217,7 +217,7 @@ int32_t get32_t(const char *arg, int32_t flags, const char *varName)/*#{{{*/
             return 0;}
         else{
         gnFail("getInt", "integer out of range", arg, varName);}
-    }
+    } /* end if */
     return (int32_t) res;
 } /* end get32_t #}}} */
 

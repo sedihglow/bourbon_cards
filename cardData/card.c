@@ -8,45 +8,145 @@
 
 
                     /* static functions */
+/* Get whiskey identification numbers for the whiskeys drank.
+   Returns: A filled integer array corresponding with whiskey identification
+            values.*/
+static int** getWhiskeys_drank(char *temp, char *tmpPl, FILE *Restrict data)/*#{{{*/
+{
+#define MAX_TMP    20
+    int **whiskeysDrank = (int**) malloc(sizeof(int)*MAX_WS); /* whisk ID nums */
+    int i = 0; /* index of  * */
+    int j = 0; /* index of ** */
+    char tmpRes[MAX_TMP] = {'\0'};
+
+    if(whiskeysDrank == NULL){
+        errExit("getWhiskeys_drank: malloc failure");}
+
+    fgetsInput_noClear_withNline(temp, MAX_TMP, data);
+    tmpPl = temp; /* set placement for tmpPl before going through
+                     the rest of the line */
+    for(i = 0; *tmpPl != '\n'; ++i)
+    {
+        if(i == H_SHOE)
+        {
+            ++j;   /* go to next pointer */
+            i = 0; /* reset to start of j index array */
+        } /* end if */
+
+        fgets_nextFullLine(data, temp, MAX_TMP, tmpPl, tmpRes,
+                           *tmpPl != '\n' && *tmpPl != ' ');
+        whiskeysDrank[j][i] = getInt(tmpRes, 0, "getWhiskeys_drank: tmpRes");
+    }
+
+    return whiskeysDrank;
+#undef MAX_TMP
+} /* end getWhiskeys_drank #}}} */
 
                     /* header functions */
-cardStack_s* obtain_cardData(char *path)/*#{{{*/
+cardDeck_s* obtain_cardData(char *path)/*#{{{*/
 {
-    cardStack_s *newStack = NULL;
-    newStack = alloc_cardStack();
-    fill_cardStack(newStack, path);
+    cardDeck_s *newStack = NULL;
+    newStack = alloc_cardDeck();
+    fill_cardDeck(newStack, path);
     return NULL;
 } /* end obtain_cardData #}}} */
 
-cardStack_s* alloc_cardStack()/*#{{{*/
+cardDeck_s* alloc_cardDeck()/*#{{{*/
 {
-    cardStack_s *newDeck = (cardStack_s*) malloc(sizeof(cardStack_s));
-    rbTree_init(newDeck);
-    return NULL; /* newDeck will be null if malloc failed */
-} /* end alloc_cardStack #}}} */
+    cardDeck_s *newDeck = (cardDeck_s*) malloc(sizeof(cardDeck_s));
+    if(newDeck == NULL){
+        errExit("alloc_cardDeck: newDeck failed to allocate");}
+    rbTree_init(newDeck); 
+    return newDeck; 
+} /* end alloc_cardDeck #}}} */
 
-void fill_cardStack(cardStack_s *Restrict cardData, char *path)/*#{{{*/
+int32_t insertIntoDeck(cardDeck_s *Restrict cardData, card_s *Restrict toAdd)/*#{{{*/
 {
+    return give_data(cardData, toAdd);
+} /* end insertIntoDeck #}}} */
 
-
-} /* end fill_cardStack #}}} */
-
-void save_cardStack(FILE *path)/*#{{{*/
+void fill_cardDeck(cardDeck_s *Restrict cardData, char *Restrict path)/*#{{{*/
 {
+#define MAX_TMP    20
+    card_s *newCard = NULL;      /* card to be placed into deck */
+    FILE *data      = NULL;      /* the file holding all the card data */
 
-} /* end save_cardStack #}}} */
+    int  **whiskeysDrank = NULL; /* whiskey id numbers */
+    char *tmpPl   = NULL;        /* place inside char* temp */
+    char *temp    = NULL;        /* temerary buffer */
+    int  pin      = 0;           /* pin for name */
+    int  numDrank = 0;           /* whiskeys drank for name */
+    size_t len    = 0;           /* length of input fromg getLineInput */
+    
+    data = fopen("cardInfo.txt", "r");
+    if(data == NULL){
+        errExit("fill_cardDeck: failed to open cardInfo.txt");}
 
-void empty_cardStack(cardStack_s *Restrict cardData)/*#{{{*/
+    /* filling a data node */
+    while(feof(data) == 0)
+    {
+        /* initialize the new card */
+        init_card(newCard);
+
+        /* get name info */
+        /* do not need to resize. It gets resized to the proper value by the
+           data structure that holds the cards */
+        temp = (char*) malloc(sizeof(char)*MAX_NAME);
+        if(temp == NULL){
+            errExit("fill_cardDeck: malloc failure");}
+            
+        fgetsInput_noClear(temp, MAX_NAME, data, len);
+
+        /* place temp into newCard's name as proper size */
+        resize_string(temp, len, newCard -> name);
+
+        /* get pin */
+        free(temp);
+        temp = (char*) malloc(sizeof(char)*MAX_TMP);
+        if(temp == NULL){
+            errExit("fill_cardDeck: malloc failure");}
+
+        fgetsInput_noClear(temp, MAX_TMP, data, len);
+        pin = getInt(temp, 0, "fill_cardDeck: pin");
+        
+        /* get number of whiskeys drank */
+        fgetsInput_noClear(temp, MAX_TMP, data, len);
+        numDrank = getInt(temp, 0, "fill_cardDeck: numDrank");
+        
+        /* Get whiskey identification numbers for the whiskeys drank
+           Parse and gather whisky identifications after initial gathering */
+        whiskeysDrank = getWhiskeys_drank(temp, tmpPl,  data);
+        
+        /* fill rest of card */
+        newCard -> drank      = whiskeysDrank;
+        newCard -> pinNum     = pin;
+        newCard -> whiskCount = numDrank;
+
+        /* place into card deck */
+        give_data(cardData, newCard);
+    }
+
+    free(temp);
+
+    /* do not need to free whiskeysDrank because the card points to that 
+       data */
+
+    /* close file */
+    fclose(data);
+#undef MAX_TMP
+} /* end fill_cardDeck #}}} */
+
+void empty_cardDeck(cardDeck_s *Restrict cardData)/*#{{{*/
 {
     remove_allRB(cardData);
 } /* end empty_cardStacl #}}} */
 
-card_s* card_find(cardStack_s *Restrict cardData, int32_t pin)/*#{{{*/
+card_s* card_find(cardDeck_s *Restrict cardData, int32_t pin)/*#{{{*/
 {
     return rb_find(cardData, pin);
 } /* end card_find #}}} */
 
-int32_t check_pinNum(cardStack_s *Restrict cardData, int32_t pinNum)/*#{{{*/
+int32_t check_pinNum(cardDeck_s *Restrict cardData, int32_t pinNum)/*#{{{*/
 {
     uint32_t totalCount = 0;
 
@@ -61,3 +161,4 @@ int32_t check_pinNum(cardStack_s *Restrict cardData, int32_t pinNum)/*#{{{*/
 
     return totalCount;
 } /* end check_pinNum #}}} */
+

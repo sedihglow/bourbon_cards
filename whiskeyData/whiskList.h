@@ -33,6 +33,18 @@ void fill_whiskTable(whiskTable_s *Restrict whiskData, char *path);
 */
 void save_whiskTable(FILE *path);
 
+/* Appened a new whiskey and whiskey number into the whiskey database.
+   - data, FILE*    , holds the whiskey names and corresponding numbers
+   - whiskName char*, string of the whiskey to be saved's name.
+   - wnum, int      , whiskey number corresponding to the name.
+   Errors:*/
+#define save_newWhisk(data, whiskName, wnum)                                   \
+{ /*#{{{*/                                                                     \
+    if(fseek(data, 0, SEEK_END) == -1){ /* ensures placement */                \
+        errExit("save_newWhisk: fseek to SEEK_END");                           \
+    fprintf(data, "%s,%d\n", whiskName, wnum);                                 \
+} /* end save_newWhisk #}}} */
+
 /* Remove all information from the whiskTable passed.
    Returns:
    Errors:

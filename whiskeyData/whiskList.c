@@ -23,9 +23,9 @@ static char* get_correction(char *posNames[])/*#{{{*/
 #define BF_SZ_ 4 
 
     char *curName = NULL;
-    char *ans = NULL;  /* malloced in getLineInput */
     size_t inLen = 0;  /* size of the string inputed */
     int32_t i = 0;
+    char ans[BF_SZ_] = {0}; /* user input for correction */
 
     /* explain the screen they are seeing is the spell checker */
     printf("There was no match for the whiskey name you entered.\n"
@@ -37,7 +37,7 @@ static char* get_correction(char *posNames[])/*#{{{*/
     curName = posNames[0];
     for(i = 1; curName != NULL; ++i, ++curName){
         printf("%d : %s\n", i, curName);}
-    
+   
     do
     {
         /* get input from the user.
@@ -45,12 +45,13 @@ static char* get_correction(char *posNames[])/*#{{{*/
         printf("\nPlease enter the correct corresponding number.\n"
                "(0 = nothing is correct)\n>> ");
 
-        errno = 0;
-        getLineInput(ans, BF_SZ_, stdin, inLen);
+        fgetsInput(ans, BF_SZ_, stdin, inLen);
         i = get32_t(ans, GN_NOEXIT_, "ans"); 
         /* TODO: ensure behavior with GN_NOEXIT_ is
                  appropriate when i try to break it */
-    }while(errno != 0 && i < CHECK_SIZE);
+
+        /* i cannot be larger than CHECK_SIZE, or its an invalid input. */
+    }while(errno > 0 || i > CHECK_SIZE);
 
     free(ans); /* finished with users answer */
 
@@ -156,31 +157,50 @@ whiskTable_s* alloc_whiskTable()/*#{{{*/
     return newTable;
 } /* end alloc_whiskTable #}}} */
 
-/* TODO: implement this to add whiskeys to the file for the table */
-void save_whiskTable(FILE *path){}
-
-/* TODO: Untested with using fscanf */
 void fill_whiskTable(whiskTable_s *Restrict whiskData, char *path)/*#{{{*/
 {
-    FILE *infoWhisk = NULL;   /* file containing whisky info */
-    char *whiskName = NULL;   /* name of whiskey from line */
-    int32_t whiskNum = 0;     /* number corresponding to whiskName */
-    int32_t eofRet = 0;       /* saves feof return */
+#define _B_SIZE_    1024
+#define _RES_SIZE_  64
+    FILE *infoWhisk = NULL;           /* file containing whisky info */
+    char *whiskName = NULL;           /* name of whiskey from line */
+    char *bufPl     = NULL;           /* place in buffer */
+    int32_t whiskNum   = 0;           /* number corresponding to whiskName */
+    size_t size        = 0;           /* holds size of new whiskName */
+    char buff[_B_SIZE_] = {'\0'};     /* buffer from file */
+    char resStr[_RES_SIZE_] = {'\0'}; /* string pulled from buffer */
 
     /* open access to file */
     infoWhisk = fopen(path,"r+"); 
 
-    /* Gather every line in the file, allocates whiskName, filles whiskNum on
-       each line */
-    while((eofRet = fscanf(infoWhisk, "%ms %d", &whiskName, &whiskNum)) != EOF){
-            /* insert each whiskData Node into the table */
-            table_insert(whiskData, whiskName, whiskNum);}
+    /* gather the first buffer */
+    freadInput(buff, sizeof(char), _B_SIZE_, infoWhisk);
+    bufPl = buff;
 
-    if(errno != 0){ /* check if fscanf failed */
-        errExit("fill_whiskTable: Reading from file failure. Check file "
-                "format.");}
+    /* go through entire file, aquiring whiskNames and whiskNum */
+    do
+    {
+        fread_nextFullFile(infoWhisk, buff, sizeof(char), _B_SIZE_, bufPl,
+                           resStr, *bufPl != '\n' && *bufPl != ',');
 
+        /* if, is a digit, get whiskName 
+           else, get whiskNum, insert into table */
+        if(isdigit(*resStr) == 0)
+        {
+            size = strlen(resStr)+1; /* size of whiskName array, with '\0' */
+            whiskName = (char*) malloc(sizeof(char)*size);
+            resize_string(resStr, size, whiskName);
+        } /* end if */
+        else
+        {
+            whiskNum = get32_t(resStr, 0, "fill_whiskTable: whiskNum");
+            table_insert(whiskData, whiskName, whiskNum);
+        } /* else */
+    }while(feof(infoWhisk) == 0);
+
+    /* close access to the file */
     fclose(infoWhisk);
+#undef _B_SIZE_
+#undef _RES_SIZE_
 } /* end fill_whiskTable #}}} */
 
 void empty_whiskTable(whiskTable_s *Restrict whiskData)/*#{{{*/

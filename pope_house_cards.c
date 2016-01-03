@@ -28,19 +28,20 @@
 #include "pope.h"     /* card information and related functions */
 
 /* OR's a flag integer with the appropriate CD_FLAG basd on cmd line args */
-#define opt_arg(flags)/*#{{{*/{                \
-    while(*optarg != '\0')                     \
-    {                                          \
-        (flags) |= (*optarg == 'n') ? CD_N :   \
-                   (*optarg == 'w') ? CD_W :   \
-                   (*optarg == 'c') ? CD_C :   \
-                   (*optarg == 's') ? CD_S : 0;\
-        ++optarg;                              \
-    }                                          \
+#define opt_arg(flags)                                                         \
+{ /*#{{{*/                                                                     \
+    while(*optarg != '\0')                                                     \
+    {                                                                          \
+        (flags) |= (*optarg == 'n') ? CD_N :                                   \
+                   (*optarg == 'w') ? CD_W :                                   \
+                   (*optarg == 'c') ? CD_C :                                   \
+                   (*optarg == 's') ? CD_S : 0;                                \
+        ++optarg;                                                              \
+    }                                                                          \
 } /* end opt_arg #}}} */
 
-#define execute_flag(cards, flag)/*#{{{*/                                                    \
-{                                                                                            \
+#define execute_flag(cards, flag)                                              \
+{ /*#{{{*/                                                                     \
     (flag & CD_AC)    ? ((flag & CD_W && flag & CD_N) ? add_opt(cards, CD_ANW, argv+optind)  \
                                                       : add_opt(cards, CD_AW, argv+optind)) :\
     (flag & CD_RC)    ? ((flag & CD_W) ? 0/* -rw */                 \

@@ -1,53 +1,53 @@
-evan green 1
-old crow 2
-henery mckenna 3
-old taylor 4
-even 100 bib 5
-evan black 6
-ezra brooks 7
-heaven hill 6yr 8
-old charter 8yr 9
-old grand dad 10
-evan 1783 11
-fighting cock 12
-jim beam 13
-medley brothers 14
-old forester straight 15
-rebel yell 16
-4 spirits 17
-buck 8yr 18
-elijah craig 12yr 19
-jim beam black 20
-jim beam devils cut 21
-old forester signature 22
-old grand dad 114 23
-wi. weller 24
-buffalo trace 25
-corner creek 26
-four roses 27
-jum beam bonded 28
-lexington 29
-old grand dad bib 30
-rebel reserve 31
-wild turkey 101 32
-buffalo trace private barrel 33
-burnside 34
-eagle rare single barrel 35
-henry mckenna s/b 36
-jeffersons small batch 37
-old weller antique 38
-wathens single barrel 39
-bulleit 40
-cyrus noble 41
-evan single barrel 42
-iw harper 43
-makers mark 44
-russells reserve 45
-1792 ridgemont reserve 46
-elmer t lee 47
-jim beam single barrel 48
-temperance trader 49
-cw irwin 50
-henery duTore 51
-kentucky vinage 52
-woodford reserve 53
+evan green,1
+old crow,2
+henery mckenna,3
+old taylor,4
+even 100 bib,5
+evan black,6
+ezra brooks,7
+heaven hill 6yr,8
+old charter 8yr,9
+old grand dad,10
+evan 1783,12
+fighting cock,12
+jim beam,13
+medley brothers,14
+old forester straight,15
+rebel yell,16
+4 spirits,17
+buck 8yr,18
+elijah craig 12yr,19
+jim beam black,20
+jim beam devil cut,21
+old forester signature,22
+old grand dad 114,23
+wi. weller,24
+buffalo trace,25
+corner creek,26
+four roses,27
+jum beam bonded,28
+lexington,29
+old grand dad bib,30
+rebel reserve,31
+wild turkey 101,32
+buffalo trace private barrel,33
+burnside,34
+eagle rare single barrel,35
+henry mckenna s/b,36
+jeffersons small batch,37
+old weller antique,38
+wathens single barrel,39
+bulleit,40
+cyrus noble,41
+evan single barrel,42
+iw harper,43
+makers mark,44
+russells reserve,45
+1792 ridgemont reserve,46
+elmer t lee,47
+jim beam single barrel,48
+temperance trader,49
+cw irwin,50
+henery duTore,51
+kentucky vinage,52
+woodford reserve,53

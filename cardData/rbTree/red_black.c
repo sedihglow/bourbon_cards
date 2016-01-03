@@ -19,47 +19,47 @@
 
                 /* insertion */
 /* enter in a data value, return 1 if success, 0 if failure */
-static uint32_t place_data(cardStack_s *tree, card_s *toAdd);
+static uint32_t place_data(cardDeck_s *tree, card_s *toAdd);
 
                 /* insertion cases */
 /* checks all the cases conforming to the red-black tree algorithm for insert */
-static void check_insert_cases(cardStack_s *tree, rbNode_s *current);
+static void check_insert_cases(cardDeck_s *tree, rbNode_s *current);
 /* case 1: N is the root node */
 static uint32_t insert_case_1(rbNode_s *node, rbNode_s *parent);
 /* case 2: N's parent is black */
 static uint32_t insert_case_2(rbNode_s *parent);
 /* case 3: N's parent and uncle are red */
-static uint32_t insert_case_3(cardStack_s *tree, rbNode_s *parent, rbNode_s *grand, rbNode_s *uncle);
+static uint32_t insert_case_3(cardDeck_s *tree, rbNode_s *parent, rbNode_s *grand, rbNode_s *uncle);
 /* case 4: N is added to the to grandparent -> child[LEFT] -> child[RIGHT]
                             OR
            N is added to the grandparent -> child[RIGHT] -> child[LEFT] */
-static uint32_t insert_case_4(cardStack_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand);
+static uint32_t insert_case_4(cardDeck_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand);
 /* case 5: N is added to grandparent -> child[LEFT] -> child[LEFT]
                             OR
           N is added to grandparent -> child[RIGHT] -> child[RIGHT] */
-static void insert_case_5(cardStack_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand);
+static void insert_case_5(cardDeck_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand);
 
                 /* deletion */
 /* remove the given node from the tree */
-static uint32_t remove_node(cardStack_s *tree, rbNode_s *match);
+static uint32_t remove_node(cardDeck_s *tree, rbNode_s *match);
 
 /* removes everything from the tree. returns 1 if success, 0 if failure */
 static uint32_t remove_rbTree(rbNode_s **node);
 
                 /* removal cases */
 /* case 1: replacement node N is the nwew root */
-static void removal_case_1(cardStack_s *tree, rbNode_s *node);
+static void removal_case_1(cardDeck_s *tree, rbNode_s *node);
 /* case 2: S is red */
-static void removal_case_2(cardStack_s *tree, rbNode_s *node);
+static void removal_case_2(cardDeck_s *tree, rbNode_s *node);
 /* case 3: parent, sibling, and the siblings children are all black */
-static void removal_case_3(cardStack_s *tree, rbNode_s *node);
+static void removal_case_3(cardDeck_s *tree, rbNode_s *node);
 /* case 4: S & S's children are black, parent is red */
-static void removal_case_4(cardStack_s *tree, rbNode_s *node);
+static void removal_case_4(cardDeck_s *tree, rbNode_s *node);
 /* case 5: S is black, S's left child is red, right child is black, N is left
    child of its parent. */
-static void removal_case_5(cardStack_s *tree, rbNode_s *node);
+static void removal_case_5(cardDeck_s *tree, rbNode_s *node);
 /* case 6: S is black, S's right child is red, N is left child of its parent */
-static void removal_case_6(cardStack_s *tree, rbNode_s *node);
+static void removal_case_6(cardDeck_s *tree, rbNode_s *node);
 
                 /* display */
 /* display every nodes data, and its color/flag */
@@ -68,14 +68,14 @@ static uint32_t display_rbTree(rbNode_s *node);
                 /* utility functions */
 /* count every instance of a piece of data, return count */
 static uint32_t count_data(rbNode_s *node, int32_t toCount);
-/* return the total ammount of nodes in the cardStack_s */
+/* return the total ammount of nodes in the cardDeck_s */
 static uint32_t count_total(rbNode_s *node);
 
                /* red black tree utility */
 /* rotate a node left, parent = node -> parent */
-static void left_rotate(cardStack_s *tree, rbNode_s *node);
+static void left_rotate(cardDeck_s *tree, rbNode_s *node);
 /* rotate a node right */
-static void right_rotate(cardStack_s *tree, rbNode_s *node);
+static void right_rotate(cardDeck_s *tree, rbNode_s *node);
 /* retrieve the node that has a match */
 static rbNode_s* rb_match(rbNode_s *node, const int32_t pin);
 /* find in order predecessor, replace data with node, return predecessor */
@@ -86,18 +86,23 @@ static rbNode_s* replace_predecessor(rbNode_s *node);
 
                    /* initializations */
 
-void rbTree_init(cardStack_s *tree)/*#{{{*/
+int rbTree_init(cardDeck_s *tree)/*#{{{*/
 {
     /* check if tree is allready made for the pointer */
     assert(tree != NULL);
+
+    if(tree == NULL){
+        return 0;}
     
     /* initialize root */
     tree -> root = NULL;
+
+    return 1;
 } /* end rb_init #}}} */
 
                    /* insertion */
 
-uint32_t give_data(cardStack_s *tree, card_s *toAdd)/*#{{{*/
+uint32_t give_data(cardDeck_s *tree, card_s *toAdd)/*#{{{*/
 {
     if(!tree)
     {
@@ -108,7 +113,7 @@ uint32_t give_data(cardStack_s *tree, card_s *toAdd)/*#{{{*/
     return place_data(tree, toAdd);
 } /* end give_data #}}} */
 
-uint32_t place_data(cardStack_s *tree, card_s *toAdd)/*#{{{*/
+uint32_t place_data(cardDeck_s *tree, card_s *toAdd)/*#{{{*/
 {
     uint32_t lastTurn = 0;
     rbNode_s *newNode = NULL;   /* holds the located of newest node for checks */
@@ -168,7 +173,7 @@ uint32_t place_data(cardStack_s *tree, card_s *toAdd)/*#{{{*/
     return 1;
 } /* end give_data #}}} */
 
-void check_insert_cases(cardStack_s *tree, rbNode_s *current)/*#{{{*/
+void check_insert_cases(cardDeck_s *tree, rbNode_s *current)/*#{{{*/
 {
     rbNode_s *grand = NULL;  /* grand of current node */
     rbNode_s *uncle = NULL;  /* uncle of current node */
@@ -224,7 +229,7 @@ uint32_t insert_case_2(rbNode_s *parent)/*#{{{*/
     return 0;
 } /* end insert_case_2 #}}} */
 
-uint32_t insert_case_3(cardStack_s *tree, rbNode_s *parent, rbNode_s *grand, rbNode_s *uncle)/*#{{{*/
+uint32_t insert_case_3(cardDeck_s *tree, rbNode_s *parent, rbNode_s *grand, rbNode_s *uncle)/*#{{{*/
 {
     /* if the grand and  uncle exists and its color is red */
     if(uncle && uncle -> cflag)
@@ -242,7 +247,7 @@ uint32_t insert_case_3(cardStack_s *tree, rbNode_s *parent, rbNode_s *grand, rbN
     return 0;
 } /* end insert_case_3 #}}} */
 
-uint32_t insert_case_4(cardStack_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand)/*#{{{*/
+uint32_t insert_case_4(cardDeck_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand)/*#{{{*/
 {
     if(node == parent -> child[RIGHT] && parent == grand -> child[LEFT])
     {
@@ -269,7 +274,7 @@ uint32_t insert_case_4(cardStack_s *tree, rbNode_s *node, rbNode_s *parent, rbNo
     return 0;
 } /* end insert_case_4 #}}} */
 
-void insert_case_5(cardStack_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand)/*#{{{*/
+void insert_case_5(cardDeck_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s *grand)/*#{{{*/
 {
     if(node == parent -> child[LEFT] && parent == grand -> child[LEFT])
     {
@@ -293,7 +298,7 @@ void insert_case_5(cardStack_s *tree, rbNode_s *node, rbNode_s *parent, rbNode_s
 
                    /* deletion */
 
-uint32_t remove_first(cardStack_s *tree, const char *toRemove, const int32_t pin)/*#{{{*/
+uint32_t remove_first(cardDeck_s *tree, const int32_t pin)/*#{{{*/
 {
     rbNode_s *match = NULL;  /* node that matched toRemove */
 
@@ -316,18 +321,18 @@ uint32_t remove_first(cardStack_s *tree, const char *toRemove, const int32_t pin
              to be removed. Much of the tree changes with removal, therefore
              this may be a required lag as appose to doing it in 1 search. 
              More analysis is required for me to be 100% certin */
-uint32_t remove_each(cardStack_s *tree, const char *toRemove, const int32_t pin)/*#{{{*/
+uint32_t remove_each(cardDeck_s *tree, const int32_t pin)/*#{{{*/
 {   
     uint32_t removals = 0;
     
     /* while something gets removed, removes all instances of toRemove */
-    while(remove_first(tree, toRemove, pin)){
+    while(remove_first(tree, pin)){
           ++removals;}
 
     return removals;
 } /* end remove_each #}}} */
 
-void remove_allRB(cardStack_s *tree)/*#{{{*/
+void remove_allRB(cardDeck_s *tree)/*#{{{*/
 {
     if(!tree && !tree -> root)
     {
@@ -363,7 +368,7 @@ uint32_t remove_rbTree(rbNode_s **node)/*#{{{*/
 
                   /* removal cases */
 
-uint32_t remove_node(cardStack_s *tree, rbNode_s *match) /*#{{{*/
+uint32_t remove_node(cardDeck_s *tree, rbNode_s *match) /*#{{{*/
 {
     rbNode_s *child = NULL; /* childs of node to be free */
     rbNode_s *pred = NULL;  /* predecessor of node - match */
@@ -412,14 +417,14 @@ uint32_t remove_node(cardStack_s *tree, rbNode_s *match) /*#{{{*/
     return 1;
 } /* end remove_node #}}} */
 
-void removal_case_1(cardStack_s *tree, rbNode_s *node)/*#{{{*/ 
+void removal_case_1(cardDeck_s *tree, rbNode_s *node)/*#{{{*/ 
 {
     /* nodes parent is NULL */
     if(node -> parent != NULL){
         removal_case_2(tree, node);}
 } /* end removal_case_1 #}}} */
 
-void removal_case_2(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+void removal_case_2(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     rbNode_s *sibling = NULL;
     sibling = find_sibling(node);
@@ -438,7 +443,7 @@ void removal_case_2(cardStack_s *tree, rbNode_s *node)/*#{{{*/
     removal_case_3(tree, node);
 } /* end removal_case_2 #}}} */
 
-void removal_case_3(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+void removal_case_3(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     rbNode_s *sibling = find_sibling(node);
     int32_t cLeft = find_rbcolor(sibling -> child[LEFT]);
@@ -458,7 +463,7 @@ void removal_case_3(cardStack_s *tree, rbNode_s *node)/*#{{{*/
     } /* end else */
 } /* end removal_case_3 #}}} */
 
-void removal_case_4(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+void removal_case_4(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     rbNode_s *sibling = find_sibling(node);
     int32_t cLeft = find_rbcolor(sibling -> child[LEFT]);
@@ -478,7 +483,7 @@ void removal_case_4(cardStack_s *tree, rbNode_s *node)/*#{{{*/
     } /* end else */
 } /* end removal_case_4 #}}} */
 
-void removal_case_5(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+void removal_case_5(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     rbNode_s *sibling = find_sibling(node);
     int32_t cLeft = find_rbcolor(sibling -> child[LEFT]);
@@ -510,7 +515,7 @@ void removal_case_5(cardStack_s *tree, rbNode_s *node)/*#{{{*/
     removal_case_6(tree, node);
 } /* end removal_case_5 #}}} */
 
-void removal_case_6(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+void removal_case_6(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     rbNode_s *sibling = find_sibling(node);
 
@@ -536,7 +541,7 @@ void removal_case_6(cardStack_s *tree, rbNode_s *node)/*#{{{*/
 
                  /* utility */
 
-uint32_t data_count(cardStack_s *tree, int32_t pin)/*#{{{*/
+uint32_t data_count(cardDeck_s *tree, int32_t pin)/*#{{{*/
 {
     return count_data(tree -> root , pin);
 } /* end data_count #}}} */
@@ -555,7 +560,7 @@ uint32_t count_data(rbNode_s *node, int32_t toCount)/*#{{{*/
            + count_data(node -> child[LEFT], toCount) + match;
 } /* end count_data #}}} */
 
-uint32_t total_data_count(cardStack_s *tree)/*#{{{*/
+uint32_t total_data_count(cardDeck_s *tree)/*#{{{*/
 {
     if(!tree || !tree -> root){
         return 0;}
@@ -572,7 +577,7 @@ uint32_t count_total(rbNode_s *node)/*#{{{*/
            + 1;
 } /* end count_total #}}} */
 
-inline void left_rotate(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+inline void left_rotate(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     /* save nodes right, and nodes parent */
     rbNode_s *sRight = node -> child[RIGHT];
@@ -603,7 +608,7 @@ inline void left_rotate(cardStack_s *tree, rbNode_s *node)/*#{{{*/
         node -> child[RIGHT] -> parent = node;}
 } /* end left_rotate #}}} */
 
-inline void right_rotate(cardStack_s *tree, rbNode_s *node)/*#{{{*/
+inline void right_rotate(cardDeck_s *tree, rbNode_s *node)/*#{{{*/
 {
     /* save nodes left, and nodes parent */
     rbNode_s *sLeft = node -> child[LEFT];
@@ -633,7 +638,7 @@ inline void right_rotate(cardStack_s *tree, rbNode_s *node)/*#{{{*/
         node -> child[LEFT] -> parent = node;}
 } /* end right_rotate #}}} */
 
-struct Card* rb_find(cardStack_s *tree, const int32_t pin)/*#{{{*/
+struct Card* rb_find(cardDeck_s *tree, const int32_t pin)/*#{{{*/
 {
     rbNode_s *temp = NULL;
     temp = rb_match(tree -> root, pin);
@@ -686,7 +691,7 @@ rbNode_s* replace_predecessor(rbNode_s *node)/*#{{{*/
 /* TODO: test the display tree function. This is probably only going to
                be used for debugging since we will only be displaying a couple
                cards, not the entire effing tree. */
-uint32_t display_all(cardStack_s *tree)/*#{{{*/
+uint32_t display_all(cardDeck_s *tree)/*#{{{*/
 {
     if(!tree || !tree -> root)
    {

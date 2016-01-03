@@ -27,8 +27,8 @@
 
 /* flags used in execute_flag to inform called functions on what to execute.
    Definitions match [options] from the command line. see man.txt */
-#define CD_AW       0x1    /* -aw */
-#define CD_ANW      0x2    /* -anw */
+#define CD_AW       0x1    /* -aw , add whiskey */
+#define CD_ANW      0x2    /* -anw, add name whiskey */
 #define CD_RN       0x4    /* -rn */
 #define CD_RW       0x10   /* -rw */
 #define CD_D_       0x20   /* -d */
@@ -40,15 +40,23 @@
 #define CD_NN       0x800  /* -nn */
 #define CD_C_       0x1000 /* -c */
 
+
+/* 
+   Adds a whiskey to an existing card
+   Returns: 1 on success, -1 on error. 0 when not found.
+   Errors: EINVAL - null pointer was passed.
+*/
+int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum, 
+                            int32_t pin);
+
+/* Adds newCard into the deck. Not saved into database.
+   Returns:
+   Errors: */
+int32_t addNewCard(card_s *Restrict newCard);
+
 /* identifies a whiskey, returning its unique identification number
    returns: whiskey identification number, -1 when not found.
    errors : EINVAL - char* is NULL.
 */
 int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk);
-
-/* -aw, -anw based on flag. see man.txt for information.
-   Returns:  
-   Errors: 
-*/
-int32_t add_opt(cardStack_s *Restrict cards, int32_t flags, char **args);
 #endif
