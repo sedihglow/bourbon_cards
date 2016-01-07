@@ -11,12 +11,11 @@
 /* Get whiskey identification numbers for the whiskeys drank.
    Returns: A filled integer array corresponding with whiskey identification
             values.*/
-static int** getWhiskeys_drank(char *temp, char *tmpPl, FILE *Restrict data)/*#{{{*/
+static int* getWhiskeys_drank(char *temp, char *tmpPl, FILE *Restrict data)/*#{{{*/
 {
 #define MAX_TMP    20
-    int **whiskeysDrank = (int**) malloc(sizeof(int)*MAX_WS); /* whisk ID nums */
-    int i = 0; /* index of  * */
-    int j = 0; /* index of ** */
+    int *whiskeysDrank = (int*) malloc(sizeof(int)*MAX_WS); /* whisk ID nums */
+    int i = 0;
     char tmpRes[MAX_TMP] = {'\0'};
 
     if(whiskeysDrank == NULL){
@@ -25,21 +24,14 @@ static int** getWhiskeys_drank(char *temp, char *tmpPl, FILE *Restrict data)/*#{
     fgetsInput_noClear_withNline(temp, MAX_TMP, data);
     tmpPl = temp; /* set placement for tmpPl before going through
                      the rest of the line */
-    for(i = 0; *tmpPl != '\n'; ++i)
+    for(/*i=0*/; *tmpPl != '\n'; ++i)
     {
-        if(i == H_SHOE)
-        {
-            ++j;   /* go to next pointer */
-            i = 0; /* reset to start of j index array */
-        } /* end if */
-
         fgets_nextFullLine(data, temp, MAX_TMP, tmpPl, tmpRes,
                            *tmpPl != '\n' && *tmpPl != ' ');
-        whiskeysDrank[j][i] = getInt(tmpRes, 0, "getWhiskeys_drank: tmpRes");
+        whiskeysDrank[i] = getInt(tmpRes, 0, "getWhiskeys_drank: tmpRes");
     }
 
     return whiskeysDrank;
-#undef MAX_TMP
 } /* end getWhiskeys_drank #}}} */
 
                     /* header functions */
@@ -60,25 +52,17 @@ cardDeck_s* alloc_cardDeck()/*#{{{*/
     return newDeck; 
 } /* end alloc_cardDeck #}}} */
 
-int32_t insertIntoDeck(cardDeck_s *Restrict cardData, card_s *Restrict toAdd)/*#{{{*/
-{
-    return give_data(cardData, toAdd);
-} /* end insertIntoDeck #}}} */
-
-/* TODO: i might open the FILE* in main instead of in any functions. Keeping the fd
-   open the duration of the program... */
 void fill_cardDeck(cardDeck_s *Restrict cardData, char *Restrict path)/*#{{{*/
 {
-#define MAX_TMP    20
     card_s *newCard = NULL;      /* card to be placed into deck */
     FILE *data      = NULL;      /* the file holding all the card data */
 
     int  **whiskeysDrank = NULL; /* whiskey id numbers */
-    char *tmpPl   = NULL;        /* place inside char* temp */
-    char *temp    = NULL;        /* temerary buffer */
-    int  pin      = 0;           /* pin for name */
-    int  numDrank = 0;           /* whiskeys drank for name */
-    size_t len    = 0;           /* length of input fromg getLineInput */
+    char *tmpPl   = NULL;
+    char *temp    = NULL;
+    int  pin      = 0;  /* pin for name */
+    int  numDrank = 0;  /* whiskeys drank for name */
+    size_t len    = 0;  /* length of input fromg getLineInput */
     
     data = fopen("cardInfo.txt", "r");
     if(data == NULL){
@@ -86,8 +70,11 @@ void fill_cardDeck(cardDeck_s *Restrict cardData, char *Restrict path)/*#{{{*/
 
     /* filling a data node */
     while(feof(data) == 0)
-    {
-        /* initialize the new card */
+    {   /* initialize the new card */
+        newCard = (card_s*) malloc(sizeof(card_s));
+        if(newCard == NULL){
+            errExit("fill_cardDeck: malloc failure");}
+
         init_card(newCard);
 
         /* get name info */
@@ -137,6 +124,11 @@ void fill_cardDeck(cardDeck_s *Restrict cardData, char *Restrict path)/*#{{{*/
     fclose(data);
 #undef MAX_TMP
 } /* end fill_cardDeck #}}} */
+
+void save_cardDeck(FILE *path)/*#{{{*/
+{
+
+} /* end save_cardDeck #}}} */
 
 void empty_cardDeck(cardDeck_s *Restrict cardData)/*#{{{*/
 {

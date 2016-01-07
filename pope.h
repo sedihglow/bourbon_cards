@@ -52,7 +52,7 @@ int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum,
 /* Adds newCard into the deck. Not saved into database.
    Returns:
    Errors: */
-int32_t addNewCard(card_s *Restrict newCard);
+int32_t addNewCard(cardDeck_s *Restrict cards, card_s *Restrict newCard);
 
 /* identifies a whiskey, returning its unique identification number
    returns: whiskey identification number, -1 when not found.

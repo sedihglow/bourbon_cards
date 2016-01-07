@@ -46,10 +46,13 @@ int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum, /*#{{{
     return 1;
 } /* end add_whiskey_to_card #}}} */
 
-int32_t addNewCard(card_s *Restrict newCard)/*#{{{*/
+int32_t addNewCard(cardDeck_s *Restrict cards, card_s *Restrict newCard)/*#{{{*/
 {
     /* card should be full */
     assert(newCard != NULL && newCard -> name != NULL && newCard -> drank != NULL);
+
+    /* place card into rbtree using card.h functions */
+    insertIntoDeck(cards, newCard);
 
     return 1;
 } /* end add_card #}}} */
@@ -59,3 +62,9 @@ int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk)/*#{{{*/
     assert(whisk != NULL && whiskData != NULL);
     return id_whiskey(whiskData, whisk);
 } /* end identify_whisk #}}} */
+
+int32_t saveCardtoFile(card_s *Restrict toSave)/*#{{{*/
+{
+
+
+} /* end saveCardtoFile #}}} */

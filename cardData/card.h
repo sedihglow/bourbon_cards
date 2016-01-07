@@ -23,11 +23,15 @@ cardDeck_s* obtain_cardData(char *path);
    Errors: Returns 0 on error, 1 on success (if rbTree_init's assert is diabled) */
 cardDeck_s* alloc_cardDeck();
 
-/* Adds a new card into the deck, without saving it to the database */
+/* Adds a new card into the deck, without saving it to the database
+   Returns:
+   Errors: */
 int32_t insertIntoDeck(cardDeck_s *Restrict cardData, card_s *Restrict toAdd);
 
+/* TODO: i might open the FILE* in main instead of in any functions. Keeping the fd
+   open the duration of the program... */
 /* Fills the table with the card information found in cards.txt
-   Returns:
+   Returns: 1 on success 0 on failure.
    Errors:
 */
 void fill_cardDeck(cardDeck_s *Restrict cardData, char *path);
@@ -57,7 +61,7 @@ inline void saveNewCard(FILE *Restrict data, card_s *Restrict card)
         {
             fprintf(data, "%d ", *position);
             ++position;
-        }
+        } /* end for */
     }
 
     /* terminate whiskey numbers with a newline. Seek to ' ' after last whisk
