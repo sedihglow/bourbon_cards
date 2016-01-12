@@ -11,6 +11,11 @@
 
 #include "pope.h"
 
+/* saved a cards information into the file that holds alll card information.
+   - data, FILE *, pointer to the filestream of card database.
+   - toSave, card_s*, the new card to save into the file*/
+#define saveNewCard_File(data, toSave) {saveNewCard(data, toSave);}
+
 int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum, /*#{{{*/
                             int32_t pin)
 {
@@ -53,6 +58,9 @@ int32_t addNewCard(cardDeck_s *Restrict cards, card_s *Restrict newCard)/*#{{{*/
 
     /* place card into rbtree using card.h functions */
     insertIntoDeck(cards, newCard);
+    
+    /* TODO: save the new card into the database OR decide to do it outside
+             of this function. */
 
     return 1;
 } /* end add_card #}}} */
@@ -63,8 +71,16 @@ int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk)/*#{{{*/
     return id_whiskey(whiskData, whisk);
 } /* end identify_whisk #}}} */
 
-int32_t saveCardtoFile(card_s *Restrict toSave)/*#{{{*/
+int32_t saveExistingCard(cardDeck_s *Restrict cards, card_s *Restrict toSave,/*#{{{*/
+                         int pin)
 {
+    /* find where in the file existing card is. */
 
+    /* delete the existing card from the file */
 
-} /* end saveCardtoFile #}}} */
+    /* save the new version of the card in the same location? (not required
+       to be in the same location? Could use saveNewCard for this operation */
+    
+    return 1;
+} /* end saveExistingCard #}}} */
+

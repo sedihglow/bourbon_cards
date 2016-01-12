@@ -43,6 +43,7 @@
 
 /* 
    Adds a whiskey to an existing card
+   Does NOT save to the data file
    Returns: 1 on success, -1 on error. 0 when not found.
    Errors: EINVAL - null pointer was passed.
 */
@@ -54,9 +55,43 @@ int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum,
    Errors: */
 int32_t addNewCard(cardDeck_s *Restrict cards, card_s *Restrict newCard);
 
-/* identifies a whiskey, returning its unique identification number
+/* Identifies a whiskey, returning its unique identification number
    returns: whiskey identification number, -1 when not found.
    errors : EINVAL - char* is NULL.
 */
 int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk);
+
+/* Replaces a cards information with the new information in toSave.
+   Returns:
+   Errors: */
+int32_t saveExistingCard(cardDeck_s *Restrict cards, card_s *Restrict toSave,
+                         int pin);
+
+/* Removes a whiskey from a card in the deck and the data file
+   Returns:
+   Errors: */
+
+/* Add a new whiskey to the whiskey table
+   Returns:
+   Errors: */
+
+/* Save a whiskey into the whiskey data file.
+   Retruns:
+   Errors:  */
+
+/* Remove whiskey from table and database.
+   Returns:
+   Errors : */
+
+/* Remove a card from the cardDeck.
+   Returns:
+   Errors: */
+
+/* Remove a card from the data file.
+   Returns:
+   Errors: */
+
+/* TODO: See how the spellcheck for the whiskeys should be finalized. Check it
+         on user input? Let the whiskey header handle it? Look for efficiency */
+
 #endif
