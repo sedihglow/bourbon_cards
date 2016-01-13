@@ -11,10 +11,54 @@
 
 #include "pope.h"
 
-/* saved a cards information into the file that holds alll card information.
-   - data, FILE *, pointer to the filestream of card database.
-   - toSave, card_s*, the new card to save into the file*/
-#define saveNewCard_File(data, toSave) {saveNewCard(data, toSave);}
+
+                /* card functions */
+
+int32_t addNewCard(cardDeck_s *Restrict cards, card_s *Restrict newCard)/*#{{{*/
+{
+    /* card should be full */
+    assert(newCard != NULL && newCard -> name != NULL && newCard -> drank != NULL);
+
+    /* place card into rbtree using card.h functions */
+    insertIntoDeck(cards, newCard);
+    
+    /* TODO: save the new card into the database OR decide to do it outside
+             of this function. */
+
+    return 1;
+} /* end add_card #}}} */
+
+int32_t saveExistingCard(cardDeck_s *Restrict cards, card_s *Restrict toSave,/*#{{{*/
+                         int pin)
+{
+    /* find where in the file existing card is. */
+
+    /* delete the existing card from the file */
+
+    /* save the new version of the card in the same location? (not required
+       to be in the same location? Could use saveNewCard for this operation */
+    
+    return 1;
+} /* end saveExistingCard #}}} */
+
+
+int32_t cardFromDeck()/*#{{{*/
+{
+
+} /* end cardFromDeck #}}} */
+
+int32_t cardFromFile()/*#{{{*/
+{
+
+} /* end cardFromFile #}}} */
+
+                /* whisk functions */
+
+int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk)/*#{{{*/
+{
+    assert(whisk != NULL && whiskData != NULL);
+    return id_whiskey(whiskData, whisk);
+} /* end identify_whisk #}}} */
 
 int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum, /*#{{{*/
                             int32_t pin)
@@ -51,36 +95,24 @@ int32_t add_whiskey_to_card(cardDeck_s *Restrict cards, int32_t whiskNum, /*#{{{
     return 1;
 } /* end add_whiskey_to_card #}}} */
 
-int32_t addNewCard(cardDeck_s *Restrict cards, card_s *Restrict newCard)/*#{{{*/
+int32_t killWhiskData()/*#{{{*/
 {
-    /* card should be full */
-    assert(newCard != NULL && newCard -> name != NULL && newCard -> drank != NULL);
 
-    /* place card into rbtree using card.h functions */
-    insertIntoDeck(cards, newCard);
-    
-    /* TODO: save the new card into the database OR decide to do it outside
-             of this function. */
+} /* end killWhiskData #}}} */
 
-    return 1;
-} /* end add_card #}}} */
-
-int32_t identify_whisk(whiskTable_s *whiskData, char *Restrict whisk)/*#{{{*/
+int32_t whiskDataFromCard()/*#{{{*/
 {
-    assert(whisk != NULL && whiskData != NULL);
-    return id_whiskey(whiskData, whisk);
-} /* end identify_whisk #}}} */
 
-int32_t saveExistingCard(cardDeck_s *Restrict cards, card_s *Restrict toSave,/*#{{{*/
-                         int pin)
+} /* end whiskDataFromCard #}}} */
+
+int32_t whiskToTable()/*#{{{*/
 {
-    /* find where in the file existing card is. */
 
-    /* delete the existing card from the file */
+} /* end whiskToTable #}}} */
 
-    /* save the new version of the card in the same location? (not required
-       to be in the same location? Could use saveNewCard for this operation */
-    
-    return 1;
-} /* end saveExistingCard #}}} */
+int32_t whiskToFile()/*#{{{*/
+{
 
+} /* end whiskToFile #}}} */
+                   
+                    /* msc. */
